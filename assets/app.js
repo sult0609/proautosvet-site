@@ -2,7 +2,7 @@
 // Вставьте сюда URL вебхука интеграции с AmoCRM (например, из Make/Albato/Zapier
 // или своего сервера), когда он будет готов — форма сразу начнёт слать туда заявки.
 // Пока строка пустая, сайт работает как демо: заявки нигде не сохраняются.
-var LEAD_WEBHOOK_URL = "";
+var LEAD_WEBHOOK_URL = "https://proautosvet-site.vercel.app/api/lead";
 
 // ---- data ----
 var PROJECTS=[
