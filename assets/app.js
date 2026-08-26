@@ -92,18 +92,24 @@ function formatPhoneDigits(d){
  var parts=[rest.slice(0,3),rest.slice(3,6),rest.slice(6,8),rest.slice(8,10)].filter(Boolean);
  return '+7'+(parts.length?' '+parts.join(' '):'');
 }
-// то же самое, но без "+7" в начале — сам "+7" уже показан статично рядом с полем
-function formatNationalDisplay(d){
- var rest=d?d.slice(1):'';
- var parts=[rest.slice(0,3),rest.slice(3,6),rest.slice(6,8),rest.slice(8,10)].filter(Boolean);
+// поле теперь содержит ТОЛЬКО национальный номер (10 цифр) — "+7" показан статично рядом,
+// поэтому маску живого ввода делаем отдельно, не отбрасывая первую введённую цифру
+function maskNationalInput(raw){
+ var d=(raw||'').replace(/\D/g,'');
+ // если вставили номер целиком, с кодом страны (11 цифр, начинается на 7 или 8) — уберём этот код
+ if(d.length===11 && (d.charAt(0)==='7'||d.charAt(0)==='8')) d=d.slice(1);
+ return d.slice(0,10);
+}
+function formatNationalDisplay(national){
+ var parts=[national.slice(0,3),national.slice(3,6),national.slice(6,8),national.slice(8,10)].filter(Boolean);
  return parts.join(' ');
 }
 function isValidKzPhone(d){ return /^7\d{10}$/.test(d); }
 function attachPhoneMask(input){
  function sync(){
-  var digits=normalizePhoneDigits(input.value);
-  input.value=formatNationalDisplay(digits);
-  input.setCustomValidity(digits&&!isValidKzPhone(digits)?'Введите номер полностью, например 701 333 44 55':'');
+  var national=maskNationalInput(input.value);
+  input.value=formatNationalDisplay(national);
+  input.setCustomValidity(national&&national.length!==10?'Введите номер полностью, например 701 333 44 55':'');
  }
  input.addEventListener('input',sync);
  input.addEventListener('blur',sync);
@@ -131,7 +137,7 @@ function submitForm(form){
   }
   return false;
  }
- if(phoneInput){ phoneInput.setCustomValidity(''); phoneInput.value=formatNationalDisplay(phoneDigits); }
+ if(phoneInput){ phoneInput.setCustomValidity(''); phoneInput.value=formatNationalDisplay(phoneDigits.slice(1)); }
  if(!LEAD_WEBHOOK_URL){
   // демо-режим: вебхук ещё не подключён, заявка нигде не сохраняется
   showSent(form,'Заявка принята!','Демо-форма — заявка реально не отправляется. Укажите LEAD_WEBHOOK_URL в assets/app.js, чтобы подключить приём заявок.');
