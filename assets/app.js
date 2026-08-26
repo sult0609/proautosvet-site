@@ -75,9 +75,6 @@ function openModal(){document.getElementById('modal').classList.add('open');}
 function closeModal(){document.getElementById('modal').classList.remove('open');}
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
 
-// file pick
-function pickFile(inp){var lbl=inp.parentElement.querySelector('.fn');lbl.textContent=inp.files&&inp.files[0]?inp.files[0].name:'Загрузить фото автомобиля';}
-
 // ---- phone mask (KZ, +7 XXX XXX XX XX) ----
 function normalizePhoneDigits(raw){
  var d=(raw||'').replace(/\D/g,'');
@@ -92,27 +89,50 @@ function formatPhoneDigits(d){
  var parts=[rest.slice(0,3),rest.slice(3,6),rest.slice(6,8),rest.slice(8,10)].filter(Boolean);
  return '+7'+(parts.length?' '+parts.join(' '):'');
 }
-// поле теперь содержит ТОЛЬКО национальный номер (10 цифр) — "+7" показан статично рядом,
-// поэтому маску живого ввода делаем отдельно, не отбрасывая первую введённую цифру
-function maskNationalInput(raw){
+// поле теперь содержит ТОЛЬКО национальный номер (10 цифр) — "+7" показан статично рядом.
+// Важно: при обычном наборе (не вставке) НИКОГДА не срезаем цифру по длине —
+// иначе случайная лишняя цифра в конце (когда поле уже заполнено все 10 цифр)
+// сдвигает номер и "съедает" настоящую первую цифру. Срезание кода страны делаем
+// только при настоящей вставке (paste), где мы точно знаем, что это вставленный
+// полный номер, а не опечатка при наборе.
+function capNationalDigits(raw){
  var d=(raw||'').replace(/\D/g,'');
- // если вставили номер целиком, с кодом страны (11 цифр, начинается на 7 или 8) — уберём этот код
- if(d.length===11 && (d.charAt(0)==='7'||d.charAt(0)==='8')) d=d.slice(1);
  return d.slice(0,10);
 }
 function formatNationalDisplay(national){
  var parts=[national.slice(0,3),national.slice(3,6),national.slice(6,8),national.slice(8,10)].filter(Boolean);
  return parts.join(' ');
 }
-function isValidKzPhone(d){ return /^7\d{10}$/.test(d); }
+// Реальные коды операторов сотовой связи Казахстана (3 цифры сразу после +7).
+// Список сверен по нескольким справочникам (данные на 2024-2026): Beeline, Kcell/Activ,
+// Tele2, Altel. Это не 100%-я гарантия, что номер существует и используется прямо
+// сейчас (для этого нужна SMS-верификация), но полностью отсекает придуманные /
+// случайно набранные номера с несуществующим кодом оператора — например "013", "999" и т.п.
+var KZ_MOBILE_PREFIXES=['700','701','702','705','707','708','747','771','775','776','777','778'];
+var KZ_MOBILE_RE=new RegExp('^7('+KZ_MOBILE_PREFIXES.join('|')+')\\d{7}$');
+function isValidKzPhone(d){ return KZ_MOBILE_RE.test(d); }
+var INVALID_PHONE_MSG='Введите настоящий казахстанский номер, например 701 333 44 55';
 function attachPhoneMask(input){
  function sync(){
-  var national=maskNationalInput(input.value);
+  var national=capNationalDigits(input.value);
   input.value=formatNationalDisplay(national);
-  input.setCustomValidity(national&&national.length!==10?'Введите номер полностью, например 701 333 44 55':'');
+  var full=national?'7'+national:'';
+  input.setCustomValidity(national.length===10&&!isValidKzPhone(full)?INVALID_PHONE_MSG:(national&&national.length!==10?'Введите номер полностью, например 701 333 44 55':''));
  }
  input.addEventListener('input',sync);
  input.addEventListener('blur',sync);
+ input.addEventListener('paste',function(e){
+  var cd=e.clipboardData||window.clipboardData;
+  var text=cd?cd.getData('text'):'';
+  var d=(text||'').replace(/\D/g,'');
+  // вставили номер целиком, с кодом страны (11 цифр, начинается на 7 или 8) -> уберём код страны
+  if(d.length===11 && (d.charAt(0)==='7'||d.charAt(0)==='8')) d=d.slice(1);
+  var national=d.slice(0,10);
+  input.value=formatNationalDisplay(national);
+  var full=national?'7'+national:'';
+  input.setCustomValidity(national.length===10&&!isValidKzPhone(full)?INVALID_PHONE_MSG:(national&&national.length!==10?'Введите номер полностью, например 701 333 44 55':''));
+  e.preventDefault();
+ });
 }
 [].slice.call(document.querySelectorAll('input[type="tel"][name="phone"]')).forEach(attachPhoneMask);
 
@@ -131,7 +151,7 @@ function submitForm(form){
  var phoneDigits=normalizePhoneDigits(phoneInput?phoneInput.value:'');
  if(!isValidKzPhone(phoneDigits)){
   if(phoneInput){
-   phoneInput.setCustomValidity('Введите номер полностью, например 701 333 44 55');
+   phoneInput.setCustomValidity(INVALID_PHONE_MSG);
    phoneInput.reportValidity();
    phoneInput.focus();
   }
@@ -161,4 +181,4 @@ function submitForm(form){
  });
  return false;
 }
-window.jump=jump;window.toggleMenu=toggleMenu;window.openModal=openModal;window.closeModal=closeModal;window.pickFile=pickFile;window.submitForm=submitForm;
+window.jump=jump;window.toggleMenu=toggleMenu;window.openModal=openModal;window.closeModal=closeModal;window.submitForm=submitForm;
