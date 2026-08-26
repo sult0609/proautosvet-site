@@ -9,7 +9,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-NXWHH3KZ');</script>
 <!-- End Google Tag Manager -->
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ProAutosvet — комплексный тюнинг автомобилей</title>
 <meta name="description" content="15 лет создаём и реализуем комплексные проекты для автомобилей: офроуд-тюнинг, автосвет, защита кузова, экспедиционное оборудование.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,13 +17,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--brand:#c6f000;--brand2:#e2ff4d;--ink:#0d0e10;--panel:#16171b;--panel2:#1e2025;--line:#2a2c32;--txt:#f2f2f4;--muted:#a0a2a8}
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
 body{background:var(--ink);color:var(--txt);font-family:'Inter',system-ui,sans-serif;line-height:1.5;overflow-x:hidden}
 img{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;padding:0}
-.wrap{max-width:1200px;margin:0 auto;padding:0 16px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 16px;padding-left:calc(16px + env(safe-area-inset-left));padding-right:calc(16px + env(safe-area-inset-right))}
 .disp{font-family:'Oswald',Impact,sans-serif}
 .brand{color:var(--brand)}
 .grad{background:linear-gradient(135deg,#c6f000,#e2ff4d);color:#0d0e10}
@@ -34,7 +34,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .pill{display:inline-block;border:1px solid var(--brand);border-radius:999px;padding:4px 16px;font-size:12px;font-weight:600;color:var(--brand)}
 /* header */
 header{position:fixed;inset:0 0 auto 0;z-index:50;transition:.3s;height:64px;display:flex;align-items:center}
-header.scrolled{background:rgba(13,14,16,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+header.scrolled{background:rgba(13,14,16,.96);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 header .wrap{display:flex;align-items:center;justify-content:space-between;width:100%}
 .logo{font-size:24px;font-weight:700}
 nav.main{display:flex;gap:28px;font-size:14px}
@@ -46,7 +46,7 @@ nav.main button:hover{color:#fff}
 .mmenu{display:none;flex-direction:column;gap:6px;background:#0d0e10;border-top:1px solid var(--line);padding:12px 16px}
 .mmenu button{background:none;color:var(--muted);text-align:left;padding:6px 0}
 /* hero */
-.hero{position:relative;min-height:100vh;display:flex;align-items:center}
+.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center}
 .hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .hero .ov1{position:absolute;inset:0;background:linear-gradient(90deg,#0d0e10,rgba(13,14,16,.8),transparent)}
 .hero .ov2{position:absolute;inset:0;background:linear-gradient(0deg,#0d0e10,transparent,rgba(13,14,16,.6))}
@@ -59,7 +59,7 @@ section.pad{padding:80px 0}
 h2.sec{font-size:clamp(32px,5vw,44px);font-weight:700}
 .sub{color:var(--muted);margin-top:8px}
 /* projects slider */
-.slider{display:flex;gap:20px;overflow-x:auto;padding:32px 0 16px;scroll-snap-type:x mandatory}
+.slider{display:flex;gap:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:32px 0 16px;scroll-snap-type:x mandatory}
 .slider::-webkit-scrollbar{height:8px}
 .slider::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
 .card{scroll-snap-align:start;flex:0 0 auto;width:340px;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:.3s}
@@ -103,9 +103,15 @@ h2.sec{font-size:clamp(32px,5vw,44px);font-weight:700}
 .formbox{border:1px solid var(--line);background:var(--panel);border-radius:24px;padding:40px}
 .lead{display:grid;gap:12px;grid-template-columns:1fr 1fr}
 .lead .full{grid-column:1/-1}
-.lead input{border:1px solid var(--line);background:var(--ink);color:#fff;border-radius:10px;padding:12px 16px;font-size:14px;outline:none;width:100%}
+.lead input{border:1px solid var(--line);background:var(--ink);color:#fff;border-radius:10px;padding:12px 16px;font-size:16px;outline:none;width:100%}
 .lead input:focus{border-color:var(--brand)}
 .lead input::placeholder{color:var(--muted)}
+.telwrap{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--ink);border-radius:10px;padding:6px 16px 6px 6px}
+.telwrap:focus-within{border-color:var(--brand)}
+.telwrap .ic{width:32px;height:32px;border-radius:999px;display:grid;place-items:center;flex:0 0 auto;font-size:14px}
+.telwrap .telprefix{font-weight:600;color:var(--txt);font-size:16px;padding-right:10px;border-right:1px solid var(--line);flex:0 0 auto}
+.telwrap input{border:none;background:none;padding:12px 0;flex:1;min-width:0;color:#fff;font-size:16px;outline:none}
+.telwrap input::placeholder{color:var(--muted)}
 .filelbl{display:flex;align-items:center;gap:12px;border:1px dashed var(--line);background:var(--ink);border-radius:10px;padding:12px 16px;font-size:14px;color:var(--muted);cursor:pointer;grid-column:1/-1}
 .filelbl:hover{border-color:var(--brand)}
 .filelbl .ic{width:32px;height:32px;border-radius:999px;display:grid;place-items:center;flex:0 0 auto}
@@ -121,7 +127,7 @@ h2.sec{font-size:clamp(32px,5vw,44px);font-weight:700}
 .clist a:hover{color:var(--brand)}
 .copy{border-top:1px solid var(--line);padding:20px 0;text-align:center;font-size:12px;color:var(--muted)}
 /* fabs */
-.fabs{position:fixed;right:20px;bottom:20px;z-index:40;display:flex;flex-direction:column;gap:12px}
+.fabs{position:fixed;right:calc(20px + env(safe-area-inset-right));bottom:calc(20px + env(safe-area-inset-bottom));z-index:40;display:flex;flex-direction:column;gap:12px}
 .fab{width:48px;height:48px;border-radius:999px;display:grid;place-items:center;color:#fff;font-size:20px;box-shadow:0 8px 20px rgba(0,0,0,.4)}
 .fab.wa{background:linear-gradient(135deg,#25d366,#1ea952);border-radius:16px}
 .fab.wa:hover{filter:brightness(1.08)}
@@ -129,7 +135,7 @@ h2.sec{font-size:clamp(32px,5vw,44px);font-weight:700}
 /* modal */
 .modal{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.7);display:none;place-items:center;padding:16px}
 .modal.open{display:grid}
-.modal .box{width:100%;max-width:520px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:32px}
+.modal .box{width:100%;max-width:520px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:32px;max-height:calc(100vh - 32px);max-height:calc(100svh - 32px);overflow-y:auto;-webkit-overflow-scrolling:touch}
 .modal .top{display:flex;justify-content:space-between;align-items:flex-start}
 .modal .x{width:36px;height:36px;border-radius:999px;background:var(--panel2);color:#fff;font-size:16px}
 /* reveal */
@@ -271,7 +277,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <p class="sub" style="text-align:center">Оставьте заявку — перезвоним и рассчитаем ваш проект</p>
     <form class="lead" style="margin-top:32px" onsubmit="return submitForm(this)">
       <input required name="name" placeholder="Ваше имя">
-      <input required type="tel" name="phone" placeholder="Телефон">
+      <div class="telwrap"><span class="ic grad">📞</span><span class="telprefix">+7</span><input required type="tel" name="phone" inputmode="numeric" autocomplete="tel" placeholder="701 333 44 55"></div>
       <input required class="full" name="car" placeholder="Модель автомобиля">
       <label class="filelbl"><span class="ic grad">📷</span><span class="fn">Загрузить фото автомобиля</span><input type="file" accept="image/*" hidden onchange="pickFile(this)"></label>
       <button class="btn grad full" type="submit">Обсудить проект</button>
@@ -297,7 +303,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <h3 class="disp" style="font-size:20px;font-weight:600">Быстрая заявка</h3>
       <form class="lead compact" style="margin-top:16px" onsubmit="return submitForm(this)">
         <input required name="name" placeholder="Ваше имя">
-        <input required type="tel" name="phone" placeholder="Телефон">
+        <div class="telwrap"><span class="ic grad">📞</span><span class="telprefix">+7</span><input required type="tel" name="phone" inputmode="numeric" autocomplete="tel" placeholder="701 333 44 55"></div>
         <input required name="car" placeholder="Модель автомобиля">
         <label class="filelbl"><span class="ic grad">📷</span><span class="fn">Загрузить фото автомобиля</span><input type="file" accept="image/*" hidden onchange="pickFile(this)"></label>
         <button class="btn grad" type="submit">Отправить заявку</button>
@@ -324,7 +330,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
     <form class="lead compact" style="margin-top:24px" onsubmit="return submitForm(this)">
       <input required name="name" placeholder="Ваше имя">
-      <input required type="tel" name="phone" placeholder="Телефон">
+      <div class="telwrap"><span class="ic grad">📞</span><span class="telprefix">+7</span><input required type="tel" name="phone" inputmode="numeric" autocomplete="tel" placeholder="701 333 44 55"></div>
       <input required name="car" placeholder="Модель автомобиля">
       <label class="filelbl"><span class="ic grad">📷</span><span class="fn">Загрузить фото автомобиля</span><input type="file" accept="image/*" hidden onchange="pickFile(this)"></label>
       <button class="btn grad" type="submit">Получить визуализацию</button>

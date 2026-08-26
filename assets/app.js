@@ -78,6 +78,38 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 // file pick
 function pickFile(inp){var lbl=inp.parentElement.querySelector('.fn');lbl.textContent=inp.files&&inp.files[0]?inp.files[0].name:'Загрузить фото автомобиля';}
 
+// ---- phone mask (KZ, +7 XXX XXX XX XX) ----
+function normalizePhoneDigits(raw){
+ var d=(raw||'').replace(/\D/g,'');
+ if(!d) return '';
+ if(d.charAt(0)==='8') d='7'+d.slice(1); // ведущая 8 (городской стиль) -> код страны 7
+ if(d.length===10) d='7'+d; // набрали 10 цифр без кода страны -> добавляем его
+ return d.slice(0,11);
+}
+function formatPhoneDigits(d){
+ if(!d) return '';
+ var rest=d.slice(1);
+ var parts=[rest.slice(0,3),rest.slice(3,6),rest.slice(6,8),rest.slice(8,10)].filter(Boolean);
+ return '+7'+(parts.length?' '+parts.join(' '):'');
+}
+// то же самое, но без "+7" в начале — сам "+7" уже показан статично рядом с полем
+function formatNationalDisplay(d){
+ var rest=d?d.slice(1):'';
+ var parts=[rest.slice(0,3),rest.slice(3,6),rest.slice(6,8),rest.slice(8,10)].filter(Boolean);
+ return parts.join(' ');
+}
+function isValidKzPhone(d){ return /^7\d{10}$/.test(d); }
+function attachPhoneMask(input){
+ function sync(){
+  var digits=normalizePhoneDigits(input.value);
+  input.value=formatNationalDisplay(digits);
+  input.setCustomValidity(digits&&!isValidKzPhone(digits)?'Введите номер полностью, например 701 333 44 55':'');
+ }
+ input.addEventListener('input',sync);
+ input.addEventListener('blur',sync);
+}
+[].slice.call(document.querySelectorAll('input[type="tel"][name="phone"]')).forEach(attachPhoneMask);
+
 // form submit
 function showSent(form,title,text){
  form.style.display='none';
@@ -89,13 +121,24 @@ function showSent(form,title,text){
 }
 
 function submitForm(form){
+ var phoneInput=form.querySelector('input[name="phone"]');
+ var phoneDigits=normalizePhoneDigits(phoneInput?phoneInput.value:'');
+ if(!isValidKzPhone(phoneDigits)){
+  if(phoneInput){
+   phoneInput.setCustomValidity('Введите номер полностью, например 701 333 44 55');
+   phoneInput.reportValidity();
+   phoneInput.focus();
+  }
+  return false;
+ }
+ if(phoneInput){ phoneInput.setCustomValidity(''); phoneInput.value=formatNationalDisplay(phoneDigits); }
  if(!LEAD_WEBHOOK_URL){
   // демо-режим: вебхук ещё не подключён, заявка нигде не сохраняется
   showSent(form,'Заявка принята!','Демо-форма — заявка реально не отправляется. Укажите LEAD_WEBHOOK_URL в assets/app.js, чтобы подключить приём заявок.');
   return false;
  }
  var fd=new FormData(form);
- var payload={name:fd.get('name')||'',phone:fd.get('phone')||'',car:fd.get('car')||'',source:'proautosvet.kz',page:location.href};
+ var payload={name:fd.get('name')||'',phone:formatPhoneDigits(phoneDigits),car:fd.get('car')||'',source:'proautosvet.kz',page:location.href};
  var btn=form.querySelector('button[type="submit"]');
  if(btn){btn.disabled=true;}
  fetch(LEAD_WEBHOOK_URL,{
