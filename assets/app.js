@@ -137,12 +137,12 @@ function attachPhoneMask(input){
 [].slice.call(document.querySelectorAll('input[type="tel"][name="phone"]')).forEach(attachPhoneMask);
 
 // form submit
-function showSent(form,title,text){
+function showSent(form,title,text,showRetry){
  form.style.display='none';
  var d=document.createElement('div');d.className='sent';
  d.innerHTML='<div class="em">🛠️</div><h3 class="disp" style="font-size:22px;font-weight:700;margin-top:8px">'+title+'</h3>'+
  '<p class="sub" style="margin-top:8px">'+text+'</p>'+
- '<button class="btn grad" style="margin-top:16px" onclick="this.parentElement.previousElementSibling.style.display=\'\';this.parentElement.remove();">Отправить ещё</button>';
+ (showRetry?'<button class="btn grad" style="margin-top:16px" onclick="this.parentElement.previousElementSibling.style.display=\'\';this.parentElement.remove();">Попробовать снова</button>':'');
  form.insertAdjacentElement('afterend',d);
 }
 
@@ -177,7 +177,7 @@ function submitForm(form){
  }).catch(function(err){
   console.error('Lead webhook error:', err);
   if(btn){btn.disabled=false;}
-  showSent(form,'Не удалось отправить заявку','Попробуйте ещё раз или позвоните нам напрямую: <a href="tel:+77778123300" style="color:var(--brand)">+7 (777) 812-33-00</a>.');
+  showSent(form,'Не удалось отправить заявку','Попробуйте ещё раз или позвоните нам напрямую: <a href="tel:+77778123300" style="color:var(--brand)">+7 (777) 812-33-00</a>.',true);
  });
  return false;
 }
