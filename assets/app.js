@@ -24,6 +24,11 @@ var SOLUTIONS=[
  {t:"Комплексная подготовка",img:"sol-complex.jpg",d:"Проект автомобиля «под ключ» — от идеи и визуализации до сдачи."}
 ];
 
+var WORKS=["work-01.jpg","work-02.jpg","work-03.jpg","work-04.jpg","work-05.jpg","work-06.jpg",
+ "work-07.jpg","work-08.jpg","work-09.jpg","work-10.jpg","work-11.jpg","work-12.jpg",
+ "work-13.jpg","work-14.jpg","work-15.jpg","work-16.jpg","work-17.jpg","work-18.jpg",
+ "work-19.jpg","work-20.jpg","work-21.jpg"];
+
 function esc(s){return s.replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
 
 // render projects
@@ -32,6 +37,13 @@ document.getElementById('slider').innerHTML=PROJECTS.map(function(p){
  '<div class="body"><h3>'+esc(p.t)+'</h3><div class="tags">'+p.tags.map(function(t){return '<span class="tag">'+esc(t)+'</span>'}).join('')+'</div>'+
  '<p>'+esc(p.d)+'</p></div></article>';
 }).join('');
+
+// render works gallery
+document.getElementById('worksSlider').innerHTML=WORKS.map(function(f,i){
+ return '<div class="wcard reveal"><img loading="lazy" src="assets/img/works/'+f+'" alt="Автомобиль в работе — проект ProAvtosvet '+(i+1)+'"></div>';
+}).join('')+
+ '<div class="wcard more reveal"><div><div class="n disp">800+</div><div class="sub" style="margin-top:6px">автомобилей уже прошли через наш цех</div>'+
+ '<button class="btn grad" style="margin-top:16px;padding:10px 20px;font-size:13px" onclick="jump(\'contacts\')">Хочу так же</button></div></div>';
 
 // render solutions
 document.getElementById('sols').innerHTML=SOLUTIONS.map(function(s){
