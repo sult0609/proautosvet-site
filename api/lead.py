@@ -1,7 +1,7 @@
 # api/lead.py
 #
 # Serverless-функция для Vercel (Python runtime): принимает заявку с сайта
-# ProAutosvet (тот же JSON, что шлёт assets/app.js: {name, phone, car, source, page})
+# ProAvtosvet (тот же JSON, что шлёт assets/app.js: {name, phone, car, source, page})
 # и создаёт сделку + контакт в AmoCRM напрямую через API v4.
 #
 # КАК ПОДКЛЮЧИТЬ:

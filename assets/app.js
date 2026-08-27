@@ -164,7 +164,7 @@ function submitForm(form){
   return false;
  }
  var fd=new FormData(form);
- var payload={name:fd.get('name')||'',phone:formatPhoneDigits(phoneDigits),car:fd.get('car')||'',source:'proautosvet.kz',page:location.href};
+ var payload={name:fd.get('name')||'',phone:formatPhoneDigits(phoneDigits),car:fd.get('car')||'',source:'proavtosvet-patsha.kz',page:location.href};
  var btn=form.querySelector('button[type="submit"]');
  if(btn){btn.disabled=true;}
  fetch(LEAD_WEBHOOK_URL,{
