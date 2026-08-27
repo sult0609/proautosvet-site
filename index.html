@@ -96,7 +96,18 @@ h2.sec{font-size:clamp(32px,5vw,44px);font-weight:700}
 .wcard:hover img{transform:scale(1.08)}
 .wcard.more{display:flex;align-items:center;justify-content:center;text-align:center;padding:20px}
 .wcard.more .n{font-family:'Oswald',sans-serif;font-size:38px;font-weight:700;color:var(--brand)}
+.wcard:not(.more){cursor:pointer}
 @media(max-width:860px){.wcard{width:150px}.wcard img{height:220px}}
+/* lightbox */
+.lightbox{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.94);display:none;align-items:center;justify-content:center;touch-action:pan-y}
+.lightbox.open{display:flex}
+.lightbox img.lb-img{max-width:92vw;max-height:88vh;max-height:88svh;object-fit:contain;user-select:none;-webkit-user-drag:none;border-radius:8px}
+.lb-x{position:absolute;top:calc(16px + env(safe-area-inset-top));right:calc(16px + env(safe-area-inset-right));width:40px;height:40px;border-radius:999px;background:rgba(255,255,255,.12);color:#fff;font-size:18px;display:grid;place-items:center;z-index:2}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:999px;background:rgba(255,255,255,.12);color:#fff;font-size:24px;display:grid;place-items:center;z-index:2}
+.lb-prev{left:calc(12px + env(safe-area-inset-left))}
+.lb-next{right:calc(12px + env(safe-area-inset-right))}
+.lb-count{position:absolute;bottom:calc(16px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;color:var(--muted);font-size:13px}
+@media(max-width:600px){.lb-nav{width:38px;height:38px;font-size:20px}}
 /* about */
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
 .about ul{list-style:none;margin-top:24px;display:flex;flex-direction:column;gap:8px;font-size:14px}
@@ -347,6 +358,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <button class="btn grad" type="submit">Получить визуализацию</button>
     </form>
   </div>
+</div>
+
+<!-- LIGHTBOX (галерея "Проделанные работы") -->
+<div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()">
+  <button class="lb-x" onclick="closeLightbox()" aria-label="Закрыть">✕</button>
+  <button class="lb-nav lb-prev" onclick="lbMove(-1)" aria-label="Предыдущее фото">‹</button>
+  <img class="lb-img" id="lbImg" src="" alt="">
+  <button class="lb-nav lb-next" onclick="lbMove(1)" aria-label="Следующее фото">›</button>
+  <div class="lb-count" id="lbCount"></div>
 </div>
 
 <script src="assets/app.js"></script>

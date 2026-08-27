@@ -40,10 +40,55 @@ document.getElementById('slider').innerHTML=PROJECTS.map(function(p){
 
 // render works gallery
 document.getElementById('worksSlider').innerHTML=WORKS.map(function(f,i){
- return '<div class="wcard reveal"><img loading="lazy" src="assets/img/works/'+f+'" alt="Автомобиль в работе — проект ProAvtosvet '+(i+1)+'"></div>';
+ return '<div class="wcard reveal" onclick="openLightbox('+i+')"><img loading="lazy" src="assets/img/works/'+f+'" alt="Автомобиль в работе — проект ProAvtosvet '+(i+1)+'"></div>';
 }).join('')+
  '<div class="wcard more reveal"><div><div class="n disp">800+</div><div class="sub" style="margin-top:6px">автомобилей уже прошли через наш цех</div>'+
  '<button class="btn grad" style="margin-top:16px;padding:10px 20px;font-size:13px" onclick="jump(\'contacts\')">Хочу так же</button></div></div>';
+
+// ---- lightbox (увеличенный просмотр галереи "Проделанные работы") ----
+var LB_IMAGES=WORKS.map(function(f){return 'assets/img/works/'+f;});
+var lbIndex=0;
+function lbRender(){
+ document.getElementById('lbImg').src=LB_IMAGES[lbIndex];
+ document.getElementById('lbCount').textContent=(lbIndex+1)+' / '+LB_IMAGES.length;
+}
+function openLightbox(i){
+ lbIndex=i;
+ lbRender();
+ document.getElementById('lightbox').classList.add('open');
+ document.body.style.overflow='hidden';
+}
+function closeLightbox(){
+ document.getElementById('lightbox').classList.remove('open');
+ document.body.style.overflow='';
+}
+function lbMove(d){
+ lbIndex=(lbIndex+d+LB_IMAGES.length)%LB_IMAGES.length;
+ lbRender();
+}
+document.addEventListener('keydown',function(e){
+ var lb=document.getElementById('lightbox');
+ if(!lb.classList.contains('open'))return;
+ if(e.key==='Escape')closeLightbox();
+ if(e.key==='ArrowLeft')lbMove(-1);
+ if(e.key==='ArrowRight')lbMove(1);
+});
+(function(){
+ var lb=document.getElementById('lightbox'),sx=0,dx=0,active=false;
+ lb.addEventListener('touchstart',function(e){
+  if(e.touches.length!==1)return;
+  sx=e.touches[0].clientX;dx=0;active=true;
+ },{passive:true});
+ lb.addEventListener('touchmove',function(e){
+  if(!active)return;
+  dx=e.touches[0].clientX-sx;
+ },{passive:true});
+ lb.addEventListener('touchend',function(){
+  if(!active)return;active=false;
+  if(Math.abs(dx)>50) lbMove(dx<0?1:-1);
+ });
+})();
+window.openLightbox=openLightbox;window.closeLightbox=closeLightbox;window.lbMove=lbMove;
 
 // render solutions
 document.getElementById('sols').innerHTML=SOLUTIONS.map(function(s){
