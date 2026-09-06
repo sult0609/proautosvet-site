@@ -29,6 +29,28 @@ var WORKS=["work-01.jpg","work-02.jpg","work-03.jpg","work-04.jpg","work-05.jpg"
  "work-13.jpg","work-14.jpg","work-15.jpg","work-16.jpg","work-17.jpg","work-18.jpg",
  "work-19.jpg","work-20.jpg","work-21.jpg"];
 
+// ---- интерактивный автомобиль: точки на фото + чеклист в форме заявки ----
+// Цены — плейсхолдеры ("от ХХХ ХХХ ₸" из ТЗ), замените на реальные, когда пришлют.
+// x/y — позиция точки в % от ширины/высоты фото (assets/img/interactive-car.png).
+// Фото — реальный проект клиента, фон вырезан (прозрачный PNG, обрезан по машине).
+// Камуфляжная плёнка — а не Z-PRO, поэтому у палатки, маркизы и Z-PRO нет точки на
+// этом фото — их не видно на этой конкретной машине, они остаются доступны для
+// выбора только в чеклисте формы.
+// x/y — позиция маркера на изображении assets/img/interactive-car.webp в процентах
+// (координаты подобраны под это фото — весь комплект виден на одной машине).
+var EQUIPMENT=[
+ {id:"snorkel",label:"Шноркель",price:"от 350 000 ₸",x:29,y:18},
+ {id:"rack",label:"Экспедиционный багажник",price:"от 280 000 ₸",x:44,y:16.5},
+ {id:"tent",label:"Палатка на крышу",price:"от 450 000 ₸",x:65,y:6.5},
+ {id:"light",label:"Дополнительное освещение",price:"от 150 000 ₸",x:53,y:11},
+ {id:"bumper",label:"Усиленный бампер / обвес",price:"от 500 000 ₸",x:17,y:70},
+ {id:"wheels",label:"Кованые диски",price:"от 600 000 ₸",x:54,y:81},
+ {id:"tires",label:"Грязевая резина",price:"от 400 000 ₸",x:88.5,y:71},
+ {id:"steps",label:"Силовые пороги",price:"от 220 000 ₸",x:70,y:72},
+ {id:"awning",label:"Маркиза",price:"от 180 000 ₸",x:80,y:13},
+ {id:"zpro",label:"Защитное покрытие Z-PRO",price:"от 700 000 ₸",x:80,y:46}
+];
+
 function esc(s){return s.replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
 
 // render projects
@@ -44,6 +66,69 @@ document.getElementById('worksSlider').innerHTML=WORKS.map(function(f,i){
 }).join('')+
  '<div class="wcard more reveal"><div><div class="n disp">800+</div><div class="sub" style="margin-top:6px">автомобилей уже прошли через наш цех</div>'+
  '<button class="btn grad" style="margin-top:16px;padding:10px 20px;font-size:13px" onclick="jump(\'contacts\')">Хочу так же</button></div></div>';
+
+// ---- интерактивный автомобиль: точки на фото ----
+// позиция есть не у всех — то, чего не видно на конкретном фото, точки не получает
+// (но остаётся доступно для выбора в чеклисте формы ниже)
+document.getElementById('ivDots').innerHTML=EQUIPMENT.filter(function(e){return e.x!=null&&e.y!=null}).map(function(e){
+ var edgeCls = (e.x<12 ? ' edge-l' : (e.x>85 ? ' edge-r' : '')) + (e.y<15 ? ' edge-t' : '');
+ return '<button type="button" class="iv-dot'+edgeCls+'" style="left:'+e.x+'%;top:'+e.y+'%" data-id="'+e.id+'" '+
+  'onclick="toggleDotSelect(this,event)" aria-label="'+esc(e.label)+'">'+
+  '<span class="tip"><b>'+esc(e.label)+'</b><i>'+esc(e.price)+'</i></span></button>';
+}).join('');
+
+// ---- чеклист «Что хотите установить?» в форме заявки ----
+document.getElementById('eqList').innerHTML=EQUIPMENT.map(function(e){
+ var onPhoto = e.x!=null&&e.y!=null;
+ return '<label class="eq-item"><input type="checkbox" value="'+e.id+'" onchange="setEquip(this.value,this.checked)">'+
+  '<span class="eq-name">'+esc(e.label)+(onPhoto?'':' <i class="eq-nophoto">· нет на фото</i>')+'</span><span class="eq-price">'+esc(e.price)+'</span></label>';
+}).join('');
+
+var eqSelected={};
+function syncEqUI(){
+ var chosen=EQUIPMENT.filter(function(e){return eqSelected[e.id]});
+ var summaryEl=document.getElementById('eqSummary');
+ if(!chosen.length){
+  summaryEl.textContent='Что хотите установить?';
+  summaryEl.classList.remove('has-val');
+ }else{
+  var names=chosen.map(function(e){return e.label});
+  var text=names.length<=2?('Выбрано: '+names.join(', ')):('Выбрано: '+names.slice(0,2).join(', ')+' +'+(names.length-2));
+  summaryEl.textContent=text;
+  summaryEl.classList.add('has-val');
+ }
+ [].slice.call(document.querySelectorAll('#eqList input[type="checkbox"]')).forEach(function(cb){
+  cb.checked=!!eqSelected[cb.value];
+ });
+ [].slice.call(document.querySelectorAll('.iv-dot')).forEach(function(d){
+  d.classList.toggle('selected',!!eqSelected[d.getAttribute('data-id')]);
+ });
+}
+function setEquip(id,checked){
+ eqSelected[id]=checked;
+ syncEqUI();
+}
+function toggleDotSelect(el,e){
+ e.stopPropagation();
+ var id=el.getAttribute('data-id');
+ var willOpen=!el.classList.contains('active');
+ [].slice.call(document.querySelectorAll('.iv-dot.active')).forEach(function(d){ if(d!==el) d.classList.remove('active'); });
+ el.classList.toggle('active',willOpen);
+ setEquip(id,!eqSelected[id]);
+}
+function toggleEqList(e){
+ if(e) e.stopPropagation();
+ document.getElementById('eqSelect').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+ if(!e.target.closest('.iv-dot')){
+  [].slice.call(document.querySelectorAll('.iv-dot.active')).forEach(function(d){d.classList.remove('active');});
+ }
+ if(!e.target.closest('#eqSelect')){
+  var eqSel=document.getElementById('eqSelect');
+  if(eqSel) eqSel.classList.remove('open');
+ }
+});
 
 // ---- lightbox (увеличенный просмотр галереи "Проделанные работы") ----
 var LB_IMAGES=WORKS.map(function(f){return 'assets/img/works/'+f;});
@@ -238,4 +323,46 @@ function submitForm(form){
  });
  return false;
 }
+
+// заявка из блока «Интерактивный автомобиль» — те же поля + марка/модель/год
+// и список отмеченного оборудования (передаётся в AmoCRM через api/lead.py)
+function submitIvForm(form){
+ var phoneInput=form.querySelector('input[name="phone"]');
+ var phoneDigits=normalizePhoneDigits(phoneInput?phoneInput.value:'');
+ if(!isValidKzPhone(phoneDigits)){
+  if(phoneInput){
+   phoneInput.setCustomValidity(INVALID_PHONE_MSG);
+   phoneInput.reportValidity();
+   phoneInput.focus();
+  }
+  return false;
+ }
+ if(phoneInput){ phoneInput.setCustomValidity(''); phoneInput.value=formatNationalDisplay(phoneDigits.slice(1)); }
+ var fd=new FormData(form);
+ var chosen=EQUIPMENT.filter(function(e){return eqSelected[e.id]}).map(function(e){return e.label});
+ var mark=fd.get('mark')||'', model=fd.get('model')||'', year=fd.get('year')||'';
+ var carStr=(mark+' '+model).trim();
+ if(!LEAD_WEBHOOK_URL){
+  showSent(form,'Заявка принята!','Демо-форма — заявка реально не отправляется. Укажите LEAD_WEBHOOK_URL в assets/app.js, чтобы подключить приём заявок.');
+  return false;
+ }
+ var payload={name:fd.get('name')||'',phone:formatPhoneDigits(phoneDigits),mark:mark,model:model,year:year,
+  car:carStr,equipment:chosen,source:'proavtosvet-patsha.kz',page:location.href};
+ var btn=form.querySelector('button[type="submit"]');
+ if(btn){btn.disabled=true;}
+ fetch(LEAD_WEBHOOK_URL,{
+  method:'POST',
+  headers:{'Content-Type':'application/json'},
+  body:JSON.stringify(payload)
+ }).then(function(r){
+  if(!r.ok) throw new Error('bad status '+r.status);
+  showSent(form,'Заявка принята!','Спасибо! Мы свяжемся с вами и рассчитаем стоимость выбранного оборудования.');
+ }).catch(function(err){
+  console.error('Lead webhook error:', err);
+  if(btn){btn.disabled=false;}
+  showSent(form,'Не удалось отправить заявку','Попробуйте ещё раз или позвоните нам напрямую: <a href="tel:+77051108080" style="color:var(--brand)">+7 (705) 110-80-80</a>.',true);
+ });
+ return false;
+}
 window.jump=jump;window.toggleMenu=toggleMenu;window.openModal=openModal;window.closeModal=closeModal;window.submitForm=submitForm;
+window.submitIvForm=submitIvForm;window.toggleDotSelect=toggleDotSelect;window.toggleEqList=toggleEqList;window.setEquip=setEquip;

@@ -54,9 +54,16 @@ def lead():
     name = (data.get("name") or "").strip()
     phone = (data.get("phone") or "").strip()
     car = (data.get("car") or "").strip()
+    mark = (data.get("mark") or "").strip()
+    model = (data.get("model") or "").strip()
+    year = (data.get("year") or "").strip()
     source = (data.get("source") or "").strip()
     page = (data.get("page") or "").strip()
     website = (data.get("website") or "").strip()  # honeypot от ботов
+
+    # список оборудования из блока "Интерактивный автомобиль"
+    equipment_raw = data.get("equipment") or []
+    equipment = [str(x).strip() for x in equipment_raw if str(x).strip()] if isinstance(equipment_raw, list) else []
 
     if website:
         return jsonify(ok=True), 200
@@ -68,8 +75,15 @@ def lead():
         app.logger.error("AMOCRM_SUBDOMAIN / AMOCRM_TOKEN не заданы в .env")
         return jsonify(error="Server misconfigured"), 500
 
+    if not car and (mark or model):
+        car = f"{mark} {model}".strip()
+
     lead_name = f"Заявка с сайта — {car}" if car else "Заявка с сайта"
     note_lines = []
+    if year:
+        note_lines.append(f"Год выпуска: {year}")
+    if equipment:
+        note_lines.append("Выбранное оборудование: " + ", ".join(equipment))
     if source:
         note_lines.append(f"Источник: {source}")
     if page:

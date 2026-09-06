@@ -88,9 +88,17 @@ class handler(BaseHTTPRequestHandler):
         name = (data.get("name") or "").strip()
         phone = (data.get("phone") or "").strip()
         car = (data.get("car") or "").strip()
+        mark = (data.get("mark") or "").strip()
+        model = (data.get("model") or "").strip()
+        year = (data.get("year") or "").strip()
         source = (data.get("source") or "").strip()
         page = (data.get("page") or "").strip()
         website = (data.get("website") or "").strip()  # honeypot
+
+        # список оборудования из блока "Интерактивный автомобиль"
+        # (форма присылает ["Шноркель","Кованые диски", ...])
+        equipment_raw = data.get("equipment") or []
+        equipment = [str(x).strip() for x in equipment_raw if str(x).strip()] if isinstance(equipment_raw, list) else []
 
         # простая защита от ботов: скрытое поле "website" на форме,
         # которое человек никогда не заполнит, а спам-бот — заполнит
@@ -106,8 +114,17 @@ class handler(BaseHTTPRequestHandler):
             print("AMOCRM_SUBDOMAIN / AMOCRM_TOKEN не заданы в переменных окружения")
             return self._json(500, {"error": "Server misconfigured"})
 
+        # если car не прислали отдельно (старые формы), но есть марка/модель —
+        # соберём "car" из них для заголовка сделки
+        if not car and (mark or model):
+            car = f"{mark} {model}".strip()
+
         lead_name = f"Заявка с сайта — {car}" if car else "Заявка с сайта"
         note_lines = []
+        if year:
+            note_lines.append(f"Год выпуска: {year}")
+        if equipment:
+            note_lines.append("Выбранное оборудование: " + ", ".join(equipment))
         if source:
             note_lines.append(f"Источник: {source}")
         if page:

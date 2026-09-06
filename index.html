@@ -116,12 +116,48 @@ h2.sec{font-size:clamp(32px,5vw,44px);font-weight:700}
 .stat{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;text-align:center}
 .stat .n{font-family:'Oswald',sans-serif;font-size:40px;font-weight:700;color:var(--brand)}
 .stat .t{color:var(--muted);font-size:14px;margin-top:4px}
-/* visual cta */
-.vcta{position:relative;border:1px solid var(--line);border-radius:24px;overflow:hidden}
-.vcta img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.vcta .ov{position:absolute;inset:0;background:rgba(13,14,16,.8)}
-.vcta .in{position:relative;padding:56px 24px;text-align:center}
-.vcta p{max-width:640px;margin:12px auto 0;color:var(--muted)}
+/* interactive car configurator */
+.iv-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:32px;align-items:start;margin-top:40px}
+.iv-photo{position:relative;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:#000}
+.iv-photo img{width:100%;display:block}
+.iv-dots{position:absolute;inset:0}
+.iv-dot{position:absolute;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:999px;background:var(--brand);border:2px solid #0d0e10;box-shadow:0 0 0 5px rgba(198,240,0,.28);display:grid;place-items:center;z-index:2;animation:ivpulse 2.2s infinite}
+.iv-dot::after{content:'+';color:#0d0e10;font-weight:700;font-size:12px;line-height:1;transition:.15s}
+.iv-dot.selected{background:#fff}
+.iv-dot.selected::after{content:'✓'}
+.iv-dot:hover,.iv-dot.active{animation:none}
+@keyframes ivpulse{0%,100%{box-shadow:0 0 0 5px rgba(198,240,0,.28)}50%{box-shadow:0 0 0 9px rgba(198,240,0,.12)}}
+.iv-dot .tip{position:absolute;bottom:calc(100% + 12px);left:50%;transform:translate(-50%,6px);background:#0d0e10;border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-size:12px;white-space:nowrap;opacity:0;pointer-events:none;transition:.18s}
+.iv-dot.edge-l .tip{left:0;transform:translate(0,6px)}
+.iv-dot.edge-r .tip{left:auto;right:0;transform:translate(0,6px)}
+.iv-dot.edge-t .tip{bottom:auto;top:calc(100% + 12px);transform:translate(-50%,-6px)}
+.iv-dot.edge-t.edge-l .tip{transform:translate(0,-6px)}
+.iv-dot.edge-t.edge-r .tip{transform:translate(0,-6px)}
+.iv-dot .tip b{display:block;color:#fff;font-size:13px;font-weight:600}
+.iv-dot .tip i{display:block;color:var(--brand);font-weight:600;font-style:normal;margin-top:2px}
+.iv-dot:hover .tip,.iv-dot.active .tip{opacity:1;transform:translate(-50%,0)}
+.iv-dot.edge-l:hover .tip,.iv-dot.edge-l.active .tip{transform:translate(0,0)}
+.iv-dot.edge-r:hover .tip,.iv-dot.edge-r.active .tip{transform:translate(0,0)}
+.iv-dot.edge-t:hover .tip,.iv-dot.edge-t.active .tip{transform:translate(-50%,0)}
+.iv-dot.edge-t.edge-l:hover .tip,.iv-dot.edge-t.edge-l.active .tip,
+.iv-dot.edge-t.edge-r:hover .tip,.iv-dot.edge-t.edge-r.active .tip{transform:translate(0,0)}
+.iv-hint{margin-top:12px;font-size:12px;color:var(--muted);text-align:center}
+.iv-form h3{font-size:22px;font-weight:700}
+.eq-select{position:relative;grid-column:1/-1}
+.eq-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--line);background:var(--ink);color:var(--muted);border-radius:10px;padding:12px 16px;font-size:15px;text-align:left}
+.eq-toggle span:first-child.has-val{color:#fff}
+.eq-arrow{transition:.2s;flex:0 0 auto;color:var(--muted)}
+.eq-select.open .eq-arrow{transform:rotate(180deg)}
+.eq-select:focus-within .eq-toggle,.eq-select.open .eq-toggle{border-color:var(--brand)}
+.eq-list{display:none;position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:8px;z-index:10;max-height:280px;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:0 20px 40px -12px rgba(0,0,0,.6)}
+.eq-select.open .eq-list{display:block}
+.eq-item{display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:8px;cursor:pointer;font-size:14px}
+.eq-item:hover{background:rgba(255,255,255,.04)}
+.eq-item input[type="checkbox"]{all:revert;flex:0 0 auto;width:16px;height:16px;margin:0;accent-color:var(--brand);cursor:pointer}
+.eq-item .eq-name{flex:1}
+.eq-item .eq-nophoto{color:var(--muted);font-style:normal;font-size:11px}
+.eq-item .eq-price{color:var(--muted);font-size:12px;flex:0 0 auto}
+@media(max-width:860px){.iv-grid{grid-template-columns:1fr}}
 /* forms */
 .formbox{border:1px solid var(--line);background:var(--panel);border-radius:24px;padding:40px}
 .lead{display:grid;gap:12px;grid-template-columns:1fr 1fr}
@@ -185,7 +221,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <button onclick="jump('works')">Работы</button>
       <button onclick="jump('solutions')">Решения</button>
       <button onclick="jump('about')">О компании</button>
-      <button onclick="jump('visual')">Визуализация</button>
+      <button onclick="jump('visual')">Конфигуратор</button>
       <button onclick="jump('contacts')">Контакты</button>
     </nav>
     <div class="hact">
@@ -199,7 +235,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <button onclick="jump('works')">Работы</button>
     <button onclick="jump('solutions')">Решения</button>
     <button onclick="jump('about')">О компании</button>
-    <button onclick="jump('visual')">Визуализация</button>
+    <button onclick="jump('visual')">Конфигуратор</button>
     <button onclick="jump('contacts')">Контакты</button>
   </div>
 </header>
@@ -291,15 +327,40 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </section>
 
-<!-- VISUAL CTA (скрыт по просьбе клиента) -->
-<section id="visual" style="display:none"><div class="wrap">
-  <div class="vcta reveal">
-    <img src="assets/img/sol-complex.jpg" alt="Визуализация">
-    <div class="ov"></div>
-    <div class="in">
-      <h2 class="sec disp">Визуализация вашего автомобиля</h2>
-      <p>Загрузите фотографию своей машины и оставьте контакты — мы подготовим визуализацию с предполагаемым тюнингом, чтобы вы увидели результат ещё до начала работ.</p>
-      <button class="btn grad" style="margin-top:28px;padding:16px 32px" onclick="openModal()">Получить визуализацию своего автомобиля</button>
+<!-- INTERACTIVE CAR CONFIGURATOR -->
+<section class="pad" id="visual"><div class="wrap">
+  <div class="reveal" style="max-width:640px">
+    <span class="pill">ИНТЕРАКТИВНЫЙ АВТОМОБИЛЬ</span>
+    <h2 class="sec disp" style="margin-top:16px">Соберите свой внедорожник</h2>
+    <p class="sub">Наведите курсор (на телефоне — нажмите) на элемент машины, чтобы узнать, что это и сколько стоит. Отметьте нужное оборудование и оставьте заявку — мы посчитаем стоимость именно вашего проекта.</p>
+  </div>
+  <div class="iv-grid reveal">
+    <div>
+      <div class="iv-photo">
+        <img src="assets/img/interactive-car.webp" alt="Интерактивный внедорожник ProAvtosvet — весь тюнинг на одной машине">
+        <div class="iv-dots" id="ivDots"></div>
+      </div>
+      <p class="iv-hint">Отмеченные точки — это реальные позиции из наших проектов. Точные цены и полный список оборудования уточняются у менеджера.</p>
+    </div>
+    <div class="formbox iv-form">
+      <h3 class="disp">Оставить заявку</h3>
+      <p class="sub" style="margin-top:4px">Укажите авто и выберите, что хотите установить</p>
+      <form class="lead compact" id="ivForm" style="margin-top:20px" onsubmit="return submitIvForm(this)">
+        <input required name="name" placeholder="Ваше имя">
+        <div class="telwrap"><span class="ic grad">📞</span><span class="telprefix">+7</span><input required type="tel" name="phone" inputmode="numeric" autocomplete="tel" placeholder="701 333 44 55"></div>
+        <input required name="mark" placeholder="Марка автомобиля">
+        <input required name="model" placeholder="Модель автомобиля">
+        <input required name="year" inputmode="numeric" maxlength="4" placeholder="Год выпуска">
+        <div class="eq-select" id="eqSelect">
+          <button type="button" class="eq-toggle" id="eqToggle" onclick="toggleEqList(event)">
+            <span id="eqSummary">Что хотите установить?</span>
+            <span class="eq-arrow">▾</span>
+          </button>
+          <div class="eq-list" id="eqList"></div>
+        </div>
+        <button class="btn grad" type="submit">Оставить заявку</button>
+        <p class="hint">Нажимая кнопку, вы соглашаетесь на обработку данных.</p>
+      </form>
     </div>
   </div>
 </div></section>
