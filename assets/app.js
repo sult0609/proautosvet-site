@@ -84,6 +84,15 @@ document.getElementById('eqList').innerHTML=EQUIPMENT.map(function(e){
   '<span class="eq-name">'+esc(e.label)+(onPhoto?'':' <i class="eq-nophoto">· нет на фото</i>')+'</span><span class="eq-price">'+esc(e.price)+'</span></label>';
 }).join('');
 
+// извлекает число из строки цены вида "от 350 000 ₸" -> 350000 (для подсчёта суммы)
+function parsePrice(str){
+ var digits=(str||'').replace(/[^\d]/g,'');
+ return digits?parseInt(digits,10):0;
+}
+function formatSum(n){
+ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+}
+
 var eqSelected={};
 function syncEqUI(){
  var chosen=EQUIPMENT.filter(function(e){return eqSelected[e.id]});
@@ -103,6 +112,17 @@ function syncEqUI(){
  [].slice.call(document.querySelectorAll('.iv-dot')).forEach(function(d){
   d.classList.toggle('selected',!!eqSelected[d.getAttribute('data-id')]);
  });
+ // бегущая сумма набранного оборудования — показываем, только если что-то выбрано
+ var totalEl=document.getElementById('eqTotal'),totalSumEl=document.getElementById('eqTotalSum');
+ if(totalEl&&totalSumEl){
+  var sum=chosen.reduce(function(s,e){return s+parsePrice(e.price);},0);
+  if(sum>0){
+   totalSumEl.textContent=formatSum(sum);
+   totalEl.hidden=false;
+  }else{
+   totalEl.hidden=true;
+  }
+ }
 }
 function setEquip(id,checked){
  eqSelected[id]=checked;
@@ -212,11 +232,6 @@ if('IntersectionObserver' in window){
  ba.addEventListener('touchmove',function(e){setPos(e.touches[0].clientX);},{passive:true});
 })();
 
-// modal
-function openModal(){document.getElementById('modal').classList.add('open');}
-function closeModal(){document.getElementById('modal').classList.remove('open');}
-document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
-
 // ---- phone mask (KZ, +7 XXX XXX XX XX) ----
 function normalizePhoneDigits(raw){
  var d=(raw||'').replace(/\D/g,'');
@@ -288,42 +303,6 @@ function showSent(form,title,text,showRetry){
  form.insertAdjacentElement('afterend',d);
 }
 
-function submitForm(form){
- var phoneInput=form.querySelector('input[name="phone"]');
- var phoneDigits=normalizePhoneDigits(phoneInput?phoneInput.value:'');
- if(!isValidKzPhone(phoneDigits)){
-  if(phoneInput){
-   phoneInput.setCustomValidity(INVALID_PHONE_MSG);
-   phoneInput.reportValidity();
-   phoneInput.focus();
-  }
-  return false;
- }
- if(phoneInput){ phoneInput.setCustomValidity(''); phoneInput.value=formatNationalDisplay(phoneDigits.slice(1)); }
- if(!LEAD_WEBHOOK_URL){
-  // демо-режим: вебхук ещё не подключён, заявка нигде не сохраняется
-  showSent(form,'Заявка принята!','Демо-форма — заявка реально не отправляется. Укажите LEAD_WEBHOOK_URL в assets/app.js, чтобы подключить приём заявок.');
-  return false;
- }
- var fd=new FormData(form);
- var payload={name:fd.get('name')||'',phone:formatPhoneDigits(phoneDigits),car:fd.get('car')||'',source:'proavtosvet-patsha.kz',page:location.href};
- var btn=form.querySelector('button[type="submit"]');
- if(btn){btn.disabled=true;}
- fetch(LEAD_WEBHOOK_URL,{
-  method:'POST',
-  headers:{'Content-Type':'application/json'},
-  body:JSON.stringify(payload)
- }).then(function(r){
-  if(!r.ok) throw new Error('bad status '+r.status);
-  showSent(form,'Заявка принята!','Спасибо! Мы свяжемся с вами в ближайшее время.');
- }).catch(function(err){
-  console.error('Lead webhook error:', err);
-  if(btn){btn.disabled=false;}
-  showSent(form,'Не удалось отправить заявку','Попробуйте ещё раз или позвоните нам напрямую: <a href="tel:+77051108080" style="color:var(--brand)">+7 (705) 110-80-80</a>.',true);
- });
- return false;
-}
-
 // заявка из блока «Интерактивный автомобиль» — те же поля + марка/модель/год
 // и список отмеченного оборудования (передаётся в AmoCRM через api/lead.py)
 function submitIvForm(form){
@@ -364,5 +343,5 @@ function submitIvForm(form){
  });
  return false;
 }
-window.jump=jump;window.toggleMenu=toggleMenu;window.openModal=openModal;window.closeModal=closeModal;window.submitForm=submitForm;
+window.jump=jump;window.toggleMenu=toggleMenu;
 window.submitIvForm=submitIvForm;window.toggleDotSelect=toggleDotSelect;window.toggleEqList=toggleEqList;window.setEquip=setEquip;

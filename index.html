@@ -157,6 +157,9 @@ h2.sec{font-size:clamp(32px,5vw,44px);font-weight:700}
 .eq-item .eq-name{flex:1}
 .eq-item .eq-nophoto{color:var(--muted);font-style:normal;font-size:11px}
 .eq-item .eq-price{color:var(--muted);font-size:12px;flex:0 0 auto}
+.eq-total{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:14px 16px;border-radius:10px;background:rgba(198,240,0,.08);border:1px solid rgba(198,240,0,.35);font-size:13px;color:var(--muted)}
+.eq-total[hidden]{display:none}
+.eq-total b{font-family:'Oswald',sans-serif;font-size:19px;font-weight:600;color:var(--brand)}
 @media(max-width:860px){.iv-grid{grid-template-columns:1fr}}
 /* forms */
 .formbox{border:1px solid var(--line);background:var(--panel);border-radius:24px;padding:40px}
@@ -217,25 +220,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="wrap">
     <button class="logo disp" onclick="jump('top')">PRO<span class="brand">AVTOSVET</span></button>
     <nav class="main">
+      <button onclick="jump('visual')">Конфигуратор</button>
       <button onclick="jump('projects')">Проекты</button>
       <button onclick="jump('works')">Работы</button>
       <button onclick="jump('solutions')">Решения</button>
       <button onclick="jump('about')">О компании</button>
-      <button onclick="jump('visual')">Конфигуратор</button>
       <button onclick="jump('contacts')">Контакты</button>
     </nav>
     <div class="hact">
       <a class="hphone" href="tel:+77051108080">+7 (705) 110-80-80</a>
-      <button class="btn grad" style="padding:8px 16px;font-size:14px" onclick="openModal()">Визуализация</button>
+      <button class="btn grad" style="padding:8px 16px;font-size:14px" onclick="jump('visual')">Визуализация</button>
       <button class="burger" onclick="toggleMenu()">☰</button>
     </div>
   </div>
   <div class="mmenu" id="mmenu">
+    <button onclick="jump('visual')">Конфигуратор</button>
     <button onclick="jump('projects')">Проекты</button>
     <button onclick="jump('works')">Работы</button>
     <button onclick="jump('solutions')">Решения</button>
     <button onclick="jump('about')">О компании</button>
-    <button onclick="jump('visual')">Конфигуратор</button>
     <button onclick="jump('contacts')">Контакты</button>
   </div>
 </header>
@@ -251,11 +254,50 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <p>15 лет создаём и реализуем комплексные проекты для автомобилей — офроуд-тюнинг, автосвет, защита кузова и экспедиционное оборудование.</p>
       <div class="cta">
         <button class="btn grad" onclick="jump('projects')">Смотреть проекты</button>
-        <button class="btn btn-out" onclick="openModal()">Получить визуализацию</button>
+        <button class="btn btn-out" onclick="jump('visual')">Получить визуализацию</button>
       </div>
     </div>
   </div>
 </section>
+
+<!-- INTERACTIVE CAR CONFIGURATOR -->
+<section class="pad" id="visual"><div class="wrap">
+  <div class="reveal" style="max-width:640px">
+    <span class="pill">ИНТЕРАКТИВНЫЙ АВТОМОБИЛЬ</span>
+    <h2 class="sec disp" style="margin-top:16px">Соберите свой внедорожник</h2>
+    <p class="sub">Наведите курсор (на телефоне — нажмите) на элемент машины, чтобы узнать, что это и сколько стоит. Отметьте нужное оборудование и оставьте заявку — мы посчитаем стоимость именно вашего проекта.</p>
+  </div>
+  <div class="iv-grid reveal">
+    <div>
+      <div class="iv-photo">
+        <img src="assets/img/interactive-car.webp" alt="Интерактивный внедорожник ProAvtosvet — весь тюнинг на одной машине">
+        <div class="iv-dots" id="ivDots"></div>
+      </div>
+      <p class="iv-hint">Отмеченные точки — это реальные позиции из наших проектов. Точные цены и полный список оборудования уточняются у менеджера.</p>
+    </div>
+    <div class="formbox iv-form">
+      <h3 class="disp">Оставить заявку</h3>
+      <p class="sub" style="margin-top:4px">Укажите авто и выберите, что хотите установить</p>
+      <form class="lead compact" id="ivForm" style="margin-top:20px" onsubmit="return submitIvForm(this)">
+        <input required name="name" placeholder="Ваше имя">
+        <div class="telwrap"><span class="ic grad">📞</span><span class="telprefix">+7</span><input required type="tel" name="phone" inputmode="numeric" autocomplete="tel" placeholder="701 333 44 55"></div>
+        <input required name="mark" placeholder="Марка автомобиля">
+        <input required name="model" placeholder="Модель автомобиля">
+        <input required name="year" inputmode="numeric" maxlength="4" placeholder="Год выпуска">
+        <div class="eq-select" id="eqSelect">
+          <button type="button" class="eq-toggle" id="eqToggle" onclick="toggleEqList(event)">
+            <span id="eqSummary">Что хотите установить?</span>
+            <span class="eq-arrow">▾</span>
+          </button>
+          <div class="eq-list" id="eqList"></div>
+        </div>
+        <div class="eq-total" id="eqTotal" hidden>Набрано оборудования на сумму<b>от <span id="eqTotalSum">0</span> ₸</b></div>
+        <button class="btn grad" type="submit">Оставить заявку</button>
+        <p class="hint">Нажимая кнопку, вы соглашаетесь на обработку данных.</p>
+      </form>
+    </div>
+  </div>
+</div></section>
 
 <!-- PROJECTS -->
 <section class="pad" id="projects">
@@ -270,7 +312,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div>
         <h3 class="disp" style="font-size:30px;font-weight:700">До и после тюнинга</h3>
         <p class="sub" style="margin-top:12px">Потяните ползунок, чтобы сравнить сток и результат нашей комплексной подготовки: лифт подвески, силовой бампер с лебёдкой, экспедиционный багажник, автосвет и внедорожные колёса.</p>
-        <button class="btn grad" style="margin-top:24px" onclick="openModal()">Хочу так же — получить визуализацию</button>
+        <button class="btn grad" style="margin-top:24px" onclick="jump('visual')">Хочу так же — получить визуализацию</button>
       </div>
       <div class="ba" id="ba">
         <img class="before" src="assets/img/before.jpg" alt="До">
@@ -327,59 +369,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </section>
 
-<!-- INTERACTIVE CAR CONFIGURATOR -->
-<section class="pad" id="visual"><div class="wrap">
-  <div class="reveal" style="max-width:640px">
-    <span class="pill">ИНТЕРАКТИВНЫЙ АВТОМОБИЛЬ</span>
-    <h2 class="sec disp" style="margin-top:16px">Соберите свой внедорожник</h2>
-    <p class="sub">Наведите курсор (на телефоне — нажмите) на элемент машины, чтобы узнать, что это и сколько стоит. Отметьте нужное оборудование и оставьте заявку — мы посчитаем стоимость именно вашего проекта.</p>
-  </div>
-  <div class="iv-grid reveal">
-    <div>
-      <div class="iv-photo">
-        <img src="assets/img/interactive-car.webp" alt="Интерактивный внедорожник ProAvtosvet — весь тюнинг на одной машине">
-        <div class="iv-dots" id="ivDots"></div>
-      </div>
-      <p class="iv-hint">Отмеченные точки — это реальные позиции из наших проектов. Точные цены и полный список оборудования уточняются у менеджера.</p>
-    </div>
-    <div class="formbox iv-form">
-      <h3 class="disp">Оставить заявку</h3>
-      <p class="sub" style="margin-top:4px">Укажите авто и выберите, что хотите установить</p>
-      <form class="lead compact" id="ivForm" style="margin-top:20px" onsubmit="return submitIvForm(this)">
-        <input required name="name" placeholder="Ваше имя">
-        <div class="telwrap"><span class="ic grad">📞</span><span class="telprefix">+7</span><input required type="tel" name="phone" inputmode="numeric" autocomplete="tel" placeholder="701 333 44 55"></div>
-        <input required name="mark" placeholder="Марка автомобиля">
-        <input required name="model" placeholder="Модель автомобиля">
-        <input required name="year" inputmode="numeric" maxlength="4" placeholder="Год выпуска">
-        <div class="eq-select" id="eqSelect">
-          <button type="button" class="eq-toggle" id="eqToggle" onclick="toggleEqList(event)">
-            <span id="eqSummary">Что хотите установить?</span>
-            <span class="eq-arrow">▾</span>
-          </button>
-          <div class="eq-list" id="eqList"></div>
-        </div>
-        <button class="btn grad" type="submit">Оставить заявку</button>
-        <p class="hint">Нажимая кнопку, вы соглашаетесь на обработку данных.</p>
-      </form>
-    </div>
-  </div>
-</div></section>
-
-<!-- LEAD FORM -->
-<section class="pad"><div class="wrap" style="max-width:760px">
-  <div class="formbox reveal">
-    <h2 class="sec disp" style="text-align:center">Обсудить проект</h2>
-    <p class="sub" style="text-align:center">Оставьте заявку — перезвоним и рассчитаем ваш проект</p>
-    <form class="lead" style="margin-top:32px" onsubmit="return submitForm(this)">
-      <input required name="name" placeholder="Ваше имя">
-      <div class="telwrap"><span class="ic grad">📞</span><span class="telprefix">+7</span><input required type="tel" name="phone" inputmode="numeric" autocomplete="tel" placeholder="701 333 44 55"></div>
-      <input required class="full" name="car" placeholder="Модель автомобиля">
-      <button class="btn grad full" type="submit">Обсудить проект</button>
-      <p class="hint">Нажимая кнопку, вы соглашаетесь на обработку данных.</p>
-    </form>
-  </div>
-</div></section>
-
 <!-- CONTACTS -->
 <section class="contacts" id="contacts">
   <div class="wrap" style="padding:64px 16px;max-width:480px;margin:0 auto">
@@ -402,24 +391,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <a class="fab grad" href="tel:+77051108080">☎</a>
 </div>
 
-<!-- MODAL -->
-<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
-  <div class="box">
-    <div class="top">
-      <div>
-        <h3 class="disp" style="font-size:24px;font-weight:700">Получить визуализацию</h3>
-        <p class="sub" style="margin-top:4px">Оставьте контакты — пришлём визуализацию по вашему авто</p>
-      </div>
-      <button class="x" onclick="closeModal()">✕</button>
-    </div>
-    <form class="lead compact" style="margin-top:24px" onsubmit="return submitForm(this)">
-      <input required name="name" placeholder="Ваше имя">
-      <div class="telwrap"><span class="ic grad">📞</span><span class="telprefix">+7</span><input required type="tel" name="phone" inputmode="numeric" autocomplete="tel" placeholder="701 333 44 55"></div>
-      <input required name="car" placeholder="Модель автомобиля">
-      <button class="btn grad" type="submit">Получить визуализацию</button>
-    </form>
-  </div>
-</div>
 
 <!-- LIGHTBOX (галерея "Проделанные работы") -->
 <div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()">
