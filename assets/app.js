@@ -338,6 +338,7 @@ function submitIvForm(form){
   body:JSON.stringify(payload)
  }).then(function(r){
   if(!r.ok) throw new Error('bad status '+r.status);
+  if(typeof ym==='function'){ ym(112494150,'reachGoal','lead_sent'); }
   showSent(form,'Заявка принята!','Спасибо! Мы свяжемся с вами и рассчитаем стоимость выбранного оборудования.');
  }).catch(function(err){
   console.error('Lead webhook error:', err);
