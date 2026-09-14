@@ -74,7 +74,7 @@ document.getElementById('worksSlider').innerHTML=WORKS.map(function(f,i){
 // позиция есть не у всех — то, чего не видно на конкретном фото, точки не получает
 // (но остаётся доступно для выбора в чеклисте формы ниже)
 document.getElementById('ivDots').innerHTML=EQUIPMENT.filter(function(e){return e.x!=null&&e.y!=null}).map(function(e){
- var edgeCls = (e.x<12 ? ' edge-l' : (e.x>85 ? ' edge-r' : '')) + (e.y<15 ? ' edge-t' : '');
+ var edgeCls = (e.x<12 ? ' edge-l' : (e.x>85 ? ' edge-r' : '')) + (e.y<25 ? ' edge-t' : '');
  return '<button type="button" class="iv-dot'+edgeCls+'" style="left:'+e.x+'%;top:'+e.y+'%" data-id="'+e.id+'" '+
   'onclick="toggleDotSelect(this,event)" aria-label="'+esc(e.label)+'">'+
   '<span class="tip"><b>'+esc(e.label)+'</b><i>'+esc(e.price)+'</i></span></button>';
