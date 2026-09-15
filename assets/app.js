@@ -343,7 +343,7 @@ function submitIvForm(form){
  }).catch(function(err){
   console.error('Lead webhook error:', err);
   if(btn){btn.disabled=false;}
-  showSent(form,'Не удалось отправить заявку','Попробуйте ещё раз или позвоните нам напрямую: <a href="tel:+77051108080" style="color:var(--brand)">+7 (705) 110-80-80</a>.',true);
+  showSent(form,'Не удалось отправить заявку','Попробуйте ещё раз или позвоните нам напрямую: <a href="tel:+77051107070" style="color:var(--brand)">+7 (705) 110-70-70</a>.',true);
  });
  return false;
 }
