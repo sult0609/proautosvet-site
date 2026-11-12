@@ -94,6 +94,13 @@ class handler(BaseHTTPRequestHandler):
         source = (data.get("source") or "").strip()
         page = (data.get("page") or "").strip()
         website = (data.get("website") or "").strip()  # honeypot
+        # необязательное поле: с какой страницы/услуги пришла заявка —
+        # например "Диски для внедорожников" или "Автосвет X-Optic Prisma Force".
+        # Форма конфигуратора (index.html) его не шлёт — там lead_name
+        # по-прежнему "Заявка с сайта — <марка модель>" как раньше.
+        service = (data.get("service") or "").strip()
+        # для формы "Диски" — желаемый стиль дисков (кованые/литые/не определился)
+        style = (data.get("style") or "").strip()
 
         # список оборудования из блока "Интерактивный автомобиль"
         # (форма присылает ["Шноркель","Кованые диски", ...])
@@ -119,8 +126,15 @@ class handler(BaseHTTPRequestHandler):
         if not car and (mark or model):
             car = f"{mark} {model}".strip()
 
-        lead_name = f"Заявка с сайта — {car}" if car else "Заявка с сайта"
+        if service:
+            lead_name = f"Заявка — {service} — {car}" if car else f"Заявка — {service}"
+        else:
+            lead_name = f"Заявка с сайта — {car}" if car else "Заявка с сайта"
         note_lines = []
+        if service:
+            note_lines.append(f"Услуга: {service}")
+        if style:
+            note_lines.append(f"Желаемый стиль дисков: {style}")
         if year:
             note_lines.append(f"Год выпуска: {year}")
         if equipment:

@@ -57,35 +57,46 @@ var EQUIPMENT=[
 function esc(s){return s.replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
 
 // render projects
-document.getElementById('slider').innerHTML=PROJECTS.map(function(p){
- return '<article class="card reveal"><div class="ph"><img loading="lazy" src="assets/img/'+p.img+'" alt="'+esc(p.t)+'"></div>'+
- '<div class="body"><h3>'+esc(p.t)+'</h3><div class="tags">'+p.tags.map(function(t){return '<span class="tag">'+esc(t)+'</span>'}).join('')+'</div>'+
- '<p>'+esc(p.d)+'</p></div></article>';
-}).join('');
+// (все блоки ниже написаны так, чтобы безопасно не выполняться на страницах,
+// где соответствующего элемента нет — assets/app.js теперь общий файл для
+// index.html, diski.html и avtosvet.html, см. комментарий внизу файла)
+if(document.getElementById('slider')){
+ document.getElementById('slider').innerHTML=PROJECTS.map(function(p){
+  return '<article class="card reveal"><div class="ph"><img loading="lazy" src="assets/img/'+p.img+'" alt="'+esc(p.t)+'"></div>'+
+  '<div class="body"><h3>'+esc(p.t)+'</h3><div class="tags">'+p.tags.map(function(t){return '<span class="tag">'+esc(t)+'</span>'}).join('')+'</div>'+
+  '<p>'+esc(p.d)+'</p></div></article>';
+ }).join('');
+}
 
 // render works gallery
-document.getElementById('worksSlider').innerHTML=WORKS.map(function(f,i){
- return '<div class="wcard reveal" onclick="openLightbox('+i+')"><img loading="lazy" src="assets/img/works/'+f+'" alt="Автомобиль в работе — проект ProAvtosvet '+(i+1)+'"></div>';
-}).join('')+
- '<div class="wcard more reveal"><div><div class="n disp">800+</div><div class="sub" style="margin-top:6px">автомобилей уже прошли через наш цех</div>'+
- '<button class="btn grad" style="margin-top:16px;padding:10px 20px;font-size:13px" onclick="jump(\'contacts\')">Хочу так же</button></div></div>';
+if(document.getElementById('worksSlider')){
+ document.getElementById('worksSlider').innerHTML=WORKS.map(function(f,i){
+  return '<div class="wcard reveal" onclick="openLightbox('+i+')"><img loading="lazy" src="assets/img/works/'+f+'" alt="Автомобиль в работе — проект ProAvtosvet '+(i+1)+'"></div>';
+ }).join('')+
+  '<div class="wcard more reveal"><div><div class="n disp">800+</div><div class="sub" style="margin-top:6px">автомобилей уже прошли через наш цех</div>'+
+  '<button class="btn grad" style="margin-top:16px;padding:10px 20px;font-size:13px" onclick="jump(\'contacts\')">Хочу так же</button></div></div>';
+}
 
 // ---- интерактивный автомобиль: точки на фото ----
 // позиция есть не у всех — то, чего не видно на конкретном фото, точки не получает
 // (но остаётся доступно для выбора в чеклисте формы ниже)
-document.getElementById('ivDots').innerHTML=EQUIPMENT.filter(function(e){return e.x!=null&&e.y!=null}).map(function(e){
- var edgeCls = (e.x<12 ? ' edge-l' : (e.x>85 ? ' edge-r' : '')) + (e.y<25 ? ' edge-t' : '');
- return '<button type="button" class="iv-dot'+edgeCls+'" style="left:'+e.x+'%;top:'+e.y+'%" data-id="'+e.id+'" '+
-  'onclick="toggleDotSelect(this,event)" aria-label="'+esc(e.label)+'">'+
-  '<span class="tip"><b>'+esc(e.label)+'</b><i>'+esc(e.price)+'</i></span></button>';
-}).join('');
+if(document.getElementById('ivDots')){
+ document.getElementById('ivDots').innerHTML=EQUIPMENT.filter(function(e){return e.x!=null&&e.y!=null}).map(function(e){
+  var edgeCls = (e.x<12 ? ' edge-l' : (e.x>85 ? ' edge-r' : '')) + (e.y<25 ? ' edge-t' : '');
+  return '<button type="button" class="iv-dot'+edgeCls+'" style="left:'+e.x+'%;top:'+e.y+'%" data-id="'+e.id+'" '+
+   'onclick="toggleDotSelect(this,event)" aria-label="'+esc(e.label)+'">'+
+   '<span class="tip"><b>'+esc(e.label)+'</b><i>'+esc(e.price)+'</i></span></button>';
+ }).join('');
+}
 
 // ---- чеклист «Что хотите установить?» в форме заявки ----
-document.getElementById('eqList').innerHTML=EQUIPMENT.map(function(e){
- var onPhoto = e.x!=null&&e.y!=null;
- return '<label class="eq-item"><input type="checkbox" value="'+e.id+'" onchange="setEquip(this.value,this.checked)">'+
-  '<span class="eq-name">'+esc(e.label)+(onPhoto?'':' <i class="eq-nophoto">· нет на фото</i>')+'</span><span class="eq-price">'+esc(e.price)+'</span></label>';
-}).join('');
+if(document.getElementById('eqList')){
+ document.getElementById('eqList').innerHTML=EQUIPMENT.map(function(e){
+  var onPhoto = e.x!=null&&e.y!=null;
+  return '<label class="eq-item"><input type="checkbox" value="'+e.id+'" onchange="setEquip(this.value,this.checked)">'+
+   '<span class="eq-name">'+esc(e.label)+(onPhoto?'':' <i class="eq-nophoto">· нет на фото</i>')+'</span><span class="eq-price">'+esc(e.price)+'</span></label>';
+ }).join('');
+}
 
 // извлекает число из строки цены вида "от 350 000 ₸" -> 350000 (для подсчёта суммы)
 function parsePrice(str){
@@ -154,6 +165,8 @@ document.addEventListener('click',function(e){
 });
 
 // ---- lightbox (увеличенный просмотр галереи "Проделанные работы") ----
+// (есть только на index.html — элемент #lightbox там единственный;
+// на diski.html/avtosvet.html используются свои лайтбоксы через makeLightbox(), см. ниже)
 var LB_IMAGES=WORKS.map(function(f){return 'assets/img/works/'+f;});
 var lbIndex=0;
 function lbRender(){
@@ -176,39 +189,61 @@ function lbMove(d){
 }
 document.addEventListener('keydown',function(e){
  var lb=document.getElementById('lightbox');
- if(!lb.classList.contains('open'))return;
+ if(!lb||!lb.classList.contains('open'))return;
  if(e.key==='Escape')closeLightbox();
  if(e.key==='ArrowLeft')lbMove(-1);
  if(e.key==='ArrowRight')lbMove(1);
 });
-(function(){
- var lb=document.getElementById('lightbox'),sx=0,dx=0,active=false;
- lb.addEventListener('touchstart',function(e){
-  if(e.touches.length!==1)return;
-  sx=e.touches[0].clientX;dx=0;active=true;
- },{passive:true});
- lb.addEventListener('touchmove',function(e){
-  if(!active)return;
-  dx=e.touches[0].clientX-sx;
- },{passive:true});
- lb.addEventListener('touchend',function(){
-  if(!active)return;active=false;
-  if(Math.abs(dx)>50) lbMove(dx<0?1:-1);
- });
-})();
+if(document.getElementById('lightbox')){
+ (function(){
+  var lb=document.getElementById('lightbox'),sx=0,dx=0,active=false;
+  lb.addEventListener('touchstart',function(e){
+   if(e.touches.length!==1)return;
+   sx=e.touches[0].clientX;dx=0;active=true;
+  },{passive:true});
+  lb.addEventListener('touchmove',function(e){
+   if(!active)return;
+   dx=e.touches[0].clientX-sx;
+  },{passive:true});
+  lb.addEventListener('touchend',function(){
+   if(!active)return;active=false;
+   if(Math.abs(dx)>50) lbMove(dx<0?1:-1);
+  });
+ })();
+}
 window.openLightbox=openLightbox;window.closeLightbox=closeLightbox;window.lbMove=lbMove;
 
 // render solutions
-document.getElementById('sols').innerHTML=SOLUTIONS.map(function(s){
- return '<article class="card reveal"><div class="ph" style="height:208px"><img loading="lazy" src="assets/img/'+s.img+'" alt="'+esc(s.t)+'"></div>'+
- '<div class="body"><h3>'+esc(s.t)+'</h3><p>'+esc(s.d)+'</p></div></article>';
-}).join('');
+if(document.getElementById('sols')){
+ document.getElementById('sols').innerHTML=SOLUTIONS.map(function(s){
+  return '<article class="card reveal"><div class="ph" style="height:208px"><img loading="lazy" src="assets/img/'+s.img+'" alt="'+esc(s.t)+'"></div>'+
+  '<div class="body"><h3>'+esc(s.t)+'</h3><p>'+esc(s.d)+'</p></div></article>';
+ }).join('');
+}
 
-document.getElementById('yr').textContent=new Date().getFullYear();
+if(document.getElementById('yr')) document.getElementById('yr').textContent=new Date().getFullYear();
 
 // nav
 function jump(id){var el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth'});document.getElementById('mmenu').style.display='none';}
 function toggleMenu(){var m=document.getElementById('mmenu');m.style.display=m.style.display==='flex'?'none':'flex';}
+
+// дропдаун "Каталог" в десктоп-навигации (Диски / Автосвет) — клик открывает/закрывает,
+// клик вне меню или Escape закрывает; работает одинаково на мыши и тач-экранах
+function toggleCatalogMenu(ev,id){
+ if(ev){ev.stopPropagation();ev.preventDefault();}
+ var el=document.getElementById(id);
+ if(!el)return;
+ var wasOpen=el.classList.contains('open');
+ document.querySelectorAll('.navdrop.open').forEach(function(d){d.classList.remove('open');});
+ if(!wasOpen)el.classList.add('open');
+}
+window.toggleCatalogMenu=toggleCatalogMenu;
+document.addEventListener('click',function(){
+ document.querySelectorAll('.navdrop.open').forEach(function(d){d.classList.remove('open');});
+});
+document.addEventListener('keydown',function(e){
+ if(e.key==='Escape')document.querySelectorAll('.navdrop.open').forEach(function(d){d.classList.remove('open');});
+});
 
 // sticky header + reveal
 var hdr=document.getElementById('hdr');
@@ -224,16 +259,19 @@ if('IntersectionObserver' in window){
  setTimeout(revealAll,1600);
 }else{revealAll();}
 
-// before/after
-(function(){
- var ba=document.getElementById('ba'),after=document.getElementById('baAfter'),handle=document.getElementById('baHandle'),dragging=false;
- function setPos(clientX){var r=ba.getBoundingClientRect();var p=(clientX-r.left)/r.width*100;p=Math.max(0,Math.min(100,p));after.style.clipPath='inset(0 0 0 '+p+'%)';handle.style.left=p+'%';}
- ba.addEventListener('mousedown',function(e){dragging=true;setPos(e.clientX);});
- window.addEventListener('mousemove',function(e){if(dragging)setPos(e.clientX);});
- window.addEventListener('mouseup',function(){dragging=false;});
- ba.addEventListener('touchstart',function(e){setPos(e.touches[0].clientX);},{passive:true});
- ba.addEventListener('touchmove',function(e){setPos(e.touches[0].clientX);},{passive:true});
-})();
+// before/after (index.html only — есть #ba; avtosvet.html использует свой
+// compare-слайдер через initCompareSlider(), см. ниже)
+if(document.getElementById('ba')){
+ (function(){
+  var ba=document.getElementById('ba'),after=document.getElementById('baAfter'),handle=document.getElementById('baHandle'),dragging=false;
+  function setPos(clientX){var r=ba.getBoundingClientRect();var p=(clientX-r.left)/r.width*100;p=Math.max(0,Math.min(100,p));after.style.clipPath='inset(0 0 0 '+p+'%)';handle.style.left=p+'%';}
+  ba.addEventListener('mousedown',function(e){dragging=true;setPos(e.clientX);});
+  window.addEventListener('mousemove',function(e){if(dragging)setPos(e.clientX);});
+  window.addEventListener('mouseup',function(){dragging=false;});
+  ba.addEventListener('touchstart',function(e){setPos(e.touches[0].clientX);},{passive:true});
+  ba.addEventListener('touchmove',function(e){setPos(e.touches[0].clientX);},{passive:true});
+ })();
+}
 
 // ---- phone mask (KZ, +7 XXX XXX XX XX) ----
 function normalizePhoneDigits(raw){
@@ -349,3 +387,183 @@ function submitIvForm(form){
 }
 window.jump=jump;window.toggleMenu=toggleMenu;
 window.submitIvForm=submitIvForm;window.toggleDotSelect=toggleDotSelect;window.toggleEqList=toggleEqList;window.setEquip=setEquip;
+
+// =====================================================================
+// Страницы каталогов «Диски для внедорожников» (diski.html) и
+// «Автосвет X-Optic Prisma Force» (avtosvet.html), добавлено 2026-11-10.
+// Всё ниже выполняется только если на странице есть соответствующие
+// элементы — на index.html эти блоки отсутствуют, код просто не сработает
+// и никак не повлияет на главную страницу.
+// =====================================================================
+
+// ---- универсальная форма заявки (переиспользует проверку телефона и
+// хелперы форматирования, уже объявленные выше для формы конфигуратора) ----
+// opts: {service, goal, successTitle, successText}
+function submitSimpleLeadForm(form, opts){
+ opts = opts || {};
+ var phoneInput=form.querySelector('input[name="phone"]');
+ var phoneDigits=normalizePhoneDigits(phoneInput?phoneInput.value:'');
+ if(!isValidKzPhone(phoneDigits)){
+  if(phoneInput){
+   phoneInput.setCustomValidity(INVALID_PHONE_MSG);
+   phoneInput.reportValidity();
+   phoneInput.focus();
+  }
+  return false;
+ }
+ if(phoneInput){ phoneInput.setCustomValidity(''); phoneInput.value=formatNationalDisplay(phoneDigits.slice(1)); }
+ var fd=new FormData(form);
+ var mark=fd.get('mark')||'', model=fd.get('model')||'', year=fd.get('year')||'', style=fd.get('style')||'';
+ var carStr=(mark+' '+model).trim();
+ if(!LEAD_WEBHOOK_URL){
+  showSent(form,'Заявка принята!','Демо-форма — заявка реально не отправляется. Укажите LEAD_WEBHOOK_URL в assets/app.js, чтобы подключить приём заявок.');
+  return false;
+ }
+ var payload={name:fd.get('name')||'',phone:formatPhoneDigits(phoneDigits),mark:mark,model:model,year:year,
+  car:carStr,style:style,service:opts.service||'',source:'proavtosvet-patsha.kz',page:location.href};
+ var btn=form.querySelector('button[type="submit"]');
+ if(btn){btn.disabled=true;}
+ fetch(LEAD_WEBHOOK_URL,{
+  method:'POST',
+  headers:{'Content-Type':'application/json'},
+  body:JSON.stringify(payload)
+ }).then(function(r){
+  if(!r.ok) throw new Error('bad status '+r.status);
+  if(typeof ym==='function'){
+   ym(112494150,'reachGoal','lead_sent');
+   if(opts.goal) ym(112494150,'reachGoal',opts.goal);
+  }
+  showSent(form,opts.successTitle||'Заявка принята!',opts.successText||'Спасибо! Мы свяжемся с вами в ближайшее время.');
+ }).catch(function(err){
+  console.error('Lead webhook error:', err);
+  if(btn){btn.disabled=false;}
+  showSent(form,'Не удалось отправить заявку','Попробуйте ещё раз или позвоните нам напрямую: <a href="tel:+77051107070" style="color:var(--brand)">+7 (705) 110-70-70</a>.',true);
+ });
+ return false;
+}
+window.submitSimpleLeadForm=submitSimpleLeadForm;
+
+// ---- универсальный лайтбокс (используется и каталогом дисков, и
+// галереями "Готовые проекты" на обеих новых страницах) ----
+// Ожидает в разметке: #<prefix>Lightbox / #<prefix>LbImg / #<prefix>LbCount
+// и кнопки с onclick="<имя_переменной>.close()/.move(±1)".
+function makeLightbox(prefix, images){
+ var root=document.getElementById(prefix+'Lightbox');
+ if(!root) return null;
+ var imgEl=document.getElementById(prefix+'LbImg');
+ var countEl=document.getElementById(prefix+'LbCount');
+ var idx=0;
+ function render(){ imgEl.src=images[idx]; if(countEl) countEl.textContent=(idx+1)+' / '+images.length; }
+ function open(i){ idx=i||0; render(); root.classList.add('open'); document.body.style.overflow='hidden'; }
+ function close(){ root.classList.remove('open'); document.body.style.overflow=''; }
+ function move(d){ idx=(idx+d+images.length)%images.length; render(); }
+ root.addEventListener('click',function(e){ if(e.target===root) close(); });
+ document.addEventListener('keydown',function(e){
+  if(!root.classList.contains('open')) return;
+  if(e.key==='Escape') close();
+  if(e.key==='ArrowLeft') move(-1);
+  if(e.key==='ArrowRight') move(1);
+ });
+ (function(){
+  var sx=0,dx=0,active=false;
+  root.addEventListener('touchstart',function(e){ if(e.touches.length!==1)return; sx=e.touches[0].clientX;dx=0;active=true; },{passive:true});
+  root.addEventListener('touchmove',function(e){ if(!active)return; dx=e.touches[0].clientX-sx; },{passive:true});
+  root.addEventListener('touchend',function(){ if(!active)return; active=false; if(Math.abs(dx)>50) move(dx<0?1:-1); });
+ })();
+ return {open:open, close:close, move:move};
+}
+
+// ---- универсальная галерея-слайдер (карточки + клик -> лайтбокс) ----
+function renderGallery(containerId, images, lb, labelPrefix){
+ var el=document.getElementById(containerId);
+ if(!el) return;
+ el.innerHTML=images.map(function(src,i){
+  return '<div class="wcard reveal" onclick="'+lb+'.open('+i+')"><img loading="lazy" src="'+src+'" alt="'+esc(labelPrefix||'Фото')+' '+(i+1)+'"></div>';
+ }).join('');
+}
+
+// ---- compare-слайдер "до/после" (аналог блока на главной, но с другими
+// id, чтобы не пересекаться с существующим #ba на index.html) ----
+function initCompareSlider(wrapId, afterId, handleId){
+ var wrap=document.getElementById(wrapId);
+ if(!wrap) return;
+ var after=document.getElementById(afterId), handle=document.getElementById(handleId), dragging=false;
+ function setPos(clientX){
+  var r=wrap.getBoundingClientRect();
+  var p=(clientX-r.left)/r.width*100;
+  p=Math.max(0,Math.min(100,p));
+  after.style.clipPath='inset(0 0 0 '+p+'%)';
+  handle.style.left=p+'%';
+ }
+ wrap.addEventListener('mousedown',function(e){dragging=true;setPos(e.clientX);});
+ window.addEventListener('mousemove',function(e){if(dragging)setPos(e.clientX);});
+ window.addEventListener('mouseup',function(){dragging=false;});
+ wrap.addEventListener('touchstart',function(e){setPos(e.touches[0].clientX);},{passive:true});
+ wrap.addEventListener('touchmove',function(e){setPos(e.touches[0].clientX);},{passive:true});
+}
+window.initCompareSlider=initCompareSlider;
+
+// ---- каталог дисков (diski.html) ----
+// ВНИМАНИЕ: модели, размеры, характеристики и часть цен ниже — демонстрационные
+// плейсхолдеры (названия намеренно обезличены, без привязки к реальным брендам),
+// собраны по образцу ТЗ (кованые от 950 000 ₸, литые от 600 000 ₸). Фото —
+// временные заглушки с подписью "ЗАГЛУШКА — ЗАМЕНИТЬ". Перед запуском рекламы
+// на эту страницу нужно заменить и фото, и реальные модели/цены из прайса.
+var DISKI_CATALOG=[
+ {id:'forged1',group:'Кованые',name:'Модель 1',size:'20″',specs:'6x139.7 · пример характеристик, уточнить у поставщика',price:'от 950 000 ₸',
+  img:['assets/img/diski/diski-forged-1.jpg','assets/img/diski/diski-forged-1b.jpg']},
+ {id:'forged2',group:'Кованые',name:'Модель 2',size:'22″',specs:'6x139.7 · пример характеристик, уточнить у поставщика',price:'от 1 250 000 ₸',
+  img:['assets/img/diski/diski-forged-2.jpg','assets/img/diski/diski-forged-2b.jpg']},
+ {id:'cast1',group:'Литые',name:'Модель 1',size:'18″',specs:'6x139.7 · пример характеристик, уточнить у поставщика',price:'от 600 000 ₸',
+  img:['assets/img/diski/diski-cast-1.jpg','assets/img/diski/diski-cast-1b.jpg']},
+ {id:'cast2',group:'Литые',name:'Модель 2',size:'20″',specs:'6x139.7 · пример характеристик, уточнить у поставщика',price:'от 680 000 ₸',
+  img:['assets/img/diski/diski-cast-2.jpg','assets/img/diski/diski-cast-2b.jpg']}
+];
+var DISKI_GALLERY=['assets/img/diski/diski-work-01.jpg','assets/img/diski/diski-work-02.jpg','assets/img/diski/diski-work-03.jpg',
+ 'assets/img/diski/diski-work-04.jpg','assets/img/diski/diski-work-05.jpg','assets/img/diski/diski-work-06.jpg'];
+
+var diskiCatLB=null, diskiWorkLB=null;
+if(document.getElementById('diskiCatalog')){
+ var diskiCatImages=[]; var diskiCatOffsets=[];
+ DISKI_CATALOG.forEach(function(m){ diskiCatOffsets.push(diskiCatImages.length); diskiCatImages=diskiCatImages.concat(m.img); });
+ diskiCatLB=makeLightbox('diskiCat',diskiCatImages);
+ window.diskiCatLB=diskiCatLB;
+ document.getElementById('diskiCatalog').innerHTML=DISKI_CATALOG.map(function(m,i){
+  return '<article class="card reveal wheel-card"><div class="ph" onclick="diskiCatLB.open('+diskiCatOffsets[i]+')"><img loading="lazy" src="'+m.img[0]+'" alt="'+esc(m.group+' '+m.name)+'"><span class="wheel-photos">'+m.img.length+' фото</span></div>'+
+  '<div class="body"><div class="tags"><span class="tag">'+esc(m.group)+'</span><span class="tag">'+esc(m.size)+'</span></div>'+
+  '<h3>'+esc(m.group)+' — '+esc(m.name)+'</h3><p>'+esc(m.specs)+'</p>'+
+  '<div class="wheel-price">'+esc(m.price)+'</div></div></article>';
+ }).join('');
+}
+if(document.getElementById('diskiGallery')){
+ diskiWorkLB=makeLightbox('diskiWork',DISKI_GALLERY);
+ window.diskiWorkLB=diskiWorkLB;
+ renderGallery('diskiGallery',DISKI_GALLERY,'diskiWorkLB','Внедорожник с дисками, проект ProAvtosvet');
+}
+
+// ---- галерея "Автосвет X-Optic Prisma Force" (avtosvet.html) ----
+var AVTOSVET_GALLERY=['assets/img/avtosvet/avtosvet-work-01.jpg','assets/img/avtosvet/avtosvet-work-02.jpg','assets/img/avtosvet/avtosvet-work-03.jpg',
+ 'assets/img/avtosvet/avtosvet-work-04.jpg','assets/img/avtosvet/avtosvet-work-05.jpg','assets/img/avtosvet/avtosvet-work-06.jpg'];
+var avtosvetWorkLB=null;
+if(document.getElementById('avtosvetGallery')){
+ avtosvetWorkLB=makeLightbox('avtosvetWork',AVTOSVET_GALLERY);
+ window.avtosvetWorkLB=avtosvetWorkLB;
+ renderGallery('avtosvetGallery',AVTOSVET_GALLERY,'avtosvetWorkLB','Установка X-Optic Prisma Force, проект ProAvtosvet');
+}
+if(document.getElementById('cmp')){
+ initCompareSlider('cmp','cmpAfter','cmpHandle');
+}
+
+// ---- досканировать .reveal после динамического рендера каталога/галерей ----
+// Основной IntersectionObserver (см. "sticky header + reveal" выше) создаётся
+// и сканирует DOM РАНЬШЕ, чем выполняется рендер каталога дисков и галерей
+// на этой странице — иначе эти карточки так и остались бы с opacity:0 навсегда,
+// потому что исходный revEls их просто не увидел. Подключаем их отдельно.
+(function(){
+ var freshReveals=[].slice.call(document.querySelectorAll('.reveal:not(.in)'));
+ if(typeof io!=='undefined' && io){
+  freshReveals.forEach(function(el){ io.observe(el); });
+ }else{
+  freshReveals.forEach(function(el){ el.classList.add('in'); });
+ }
+})();
