@@ -213,8 +213,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <nav class="main">
       <a href="index.html">Главная</a>
       <button onclick="jump('product')">О продукте</button>
-      <button onclick="jump('compare')">До/После</button>
-      <button onclick="jump('gallery')">Проекты</button>
       <div class="navdrop" id="navdropCatalog">
         <button type="button" class="navdrop-btn" onclick="toggleCatalogMenu(event,'navdropCatalog')">Каталог <span class="chev">▾</span></button>
         <div class="navdrop-menu">
@@ -233,8 +231,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="mmenu" id="mmenu">
     <a href="index.html">Главная</a>
     <button onclick="jump('product')">О продукте</button>
-    <button onclick="jump('compare')">До/После</button>
-    <button onclick="jump('gallery')">Проекты</button>
     <span class="mmenu-label">Каталог</span>
     <a href="diski.html" class="mmenu-sub">Диски для внедорожников</a>
     <a href="avtosvet.html" class="mmenu-sub">Автосвет X-Optic Prisma Force</a>
@@ -253,7 +249,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <p>Премиальные Bi-LED модули с призматической оптической системой: мощный дальний свет, ровная заливка ближнего и чёткая светотеневая граница без ослепления встречных.</p>
       <div class="cta">
         <button class="btn grad" onclick="jump('form')">Установить Prisma Force</button>
-        <button class="btn btn-out" onclick="jump('compare')">Смотреть сравнение света</button>
+        <button class="btn btn-out" onclick="jump('product')">Смотреть модели в наличии</button>
       </div>
     </div>
   </div>
@@ -310,7 +306,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="grid2" id="avtosvetCatalog"></div>
 </div></section>
 
-<!-- СРАВНЕНИЕ СВЕТА -->
+<!--
+СКРЫТО 2026-11-17 по просьбе клиента: "Вот эти моменты скрой, по ним нет фоток" —
+реальных фото "до/после" ночью и видео пока нет, секция временно убрана с сайта
+(не удалена, лежит в комментарии — вернуть одним движением, когда клиент пришлёт
+ночные кадры штатного света / Prisma Force и видео).
+
+СРАВНЕНИЕ СВЕТА:
 <section class="pad" id="compare" style="background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
   <div class="reveal">
     <span class="pill">СРАВНЕНИЕ СВЕТА</span>
@@ -334,8 +336,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </div>
 </div></section>
+-->
 
-<!-- ГОТОВЫЕ ПРОЕКТЫ -->
+<!--
+СКРЫТО 2026-11-17 по просьбе клиента: "Вот эти моменты скрой, по ним нет фоток" —
+реальных фото готовых проектов с установленным Prisma Force пока нет, секция
+временно убрана (не удалена) — вернуть, когда появятся фото.
+
+ГОТОВЫЕ ПРОЕКТЫ:
 <section class="pad works" id="gallery">
   <div class="wrap">
     <div class="reveal">
@@ -346,6 +354,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="wslider" id="avtosvetGallery"></div>
   </div>
 </section>
+-->
 
 <!-- ГАРАНТИЯ -->
 <section class="pad warranty"><div class="wrap">
