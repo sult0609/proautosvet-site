@@ -504,23 +504,43 @@ function initCompareSlider(wrapId, afterId, handleId){
 window.initCompareSlider=initCompareSlider;
 
 // ---- каталог дисков (diski.html) ----
-// ВНИМАНИЕ: модели, размеры, характеристики и часть цен ниже — демонстрационные
-// плейсхолдеры (названия намеренно обезличены, без привязки к реальным брендам),
-// собраны по образцу ТЗ (кованые от 950 000 ₸, литые от 600 000 ₸). Фото —
-// временные заглушки с подписью "ЗАГЛУШКА — ЗАМЕНИТЬ". Перед запуском рекламы
-// на эту страницу нужно заменить и фото, и реальные модели/цены из прайса.
+// Реальные фото с объектов ProAvtosvet (ноябрь 2026). Patsha Offroad — наш
+// собственный бренд (кованые, характеристики с заводской гравировки на диске:
+// 20" 6x139.7 ET0, CB78.1, сертификация JWL, нагрузка до 1300 кг/диск).
+// MAT Race Wheel, Agility Force, FUEL, Braid Wheels и дизайн "Black Mud" —
+// диски сторонних брендов, которые мы устанавливаем на автомобили клиентов;
+// точный размер/вылет и цена по этим брендам уточняются у менеджера под
+// конкретный автомобиль — цифры по ним намеренно не указаны, чтобы не вводить
+// в заблуждение.
 var DISKI_CATALOG=[
- {id:'forged1',group:'Кованые',name:'Модель 1',size:'20″',specs:'6x139.7 · пример характеристик, уточнить у поставщика',price:'от 950 000 ₸',
-  img:['assets/img/diski/diski-forged-1.jpg','assets/img/diski/diski-forged-1b.jpg']},
- {id:'forged2',group:'Кованые',name:'Модель 2',size:'22″',specs:'6x139.7 · пример характеристик, уточнить у поставщика',price:'от 1 250 000 ₸',
-  img:['assets/img/diski/diski-forged-2.jpg','assets/img/diski/diski-forged-2b.jpg']},
- {id:'cast1',group:'Литые',name:'Модель 1',size:'18″',specs:'6x139.7 · пример характеристик, уточнить у поставщика',price:'от 600 000 ₸',
-  img:['assets/img/diski/diski-cast-1.jpg','assets/img/diski/diski-cast-1b.jpg']},
- {id:'cast2',group:'Литые',name:'Модель 2',size:'20″',specs:'6x139.7 · пример характеристик, уточнить у поставщика',price:'от 680 000 ₸',
-  img:['assets/img/diski/diski-cast-2.jpg','assets/img/diski/diski-cast-2b.jpg']}
+ {id:'patsha-black',group:'Patsha Offroad',name:'Чёрный глянец',size:'Кованые',
+  specs:'20″ · 6×139.7 · ET0 · JWL Forged, нагрузка до 1300 кг/диск',price:'от 950 000 ₸',
+  img:['assets/img/diski/real/patsha-black-1.jpg','assets/img/diski/real/patsha-black-2.jpg','assets/img/diski/real/patsha-black-3.jpg','assets/img/diski/real/patsha-black-4.jpg','assets/img/diski/real/patsha-black-5.jpg','assets/img/diski/real/patsha-black-6.jpg','assets/img/diski/real/patsha-black-onvehicle.jpg']},
+ {id:'patsha-bronze',group:'Patsha Offroad',name:'Бронза (сатин)',size:'Кованые',
+  specs:'20″ · 6×139.7 · ET0 · JWL Forged, нагрузка до 1300 кг/диск',price:'от 950 000 ₸',
+  img:['assets/img/diski/real/patsha-bronze-1.jpg','assets/img/diski/real/patsha-bronze-2.jpg','assets/img/diski/real/patsha-bronze-3.jpg','assets/img/diski/real/patsha-bronze-4.jpg','assets/img/diski/real/patsha-bronze-5.jpg','assets/img/diski/real/patsha-bronze-onvehicle-1.jpg','assets/img/diski/real/patsha-bronze-onvehicle-2.jpg']},
+ {id:'patsha-matte',group:'Patsha Offroad',name:'Матовый графит',size:'Кованые',
+  specs:'20″ · 6×139.7 · ET0 · JWL Forged, нагрузка до 1300 кг/диск',price:'от 950 000 ₸',
+  img:['assets/img/diski/real/patsha-matte-1.jpg','assets/img/diski/real/patsha-matte-2.jpg','assets/img/diski/real/patsha-matte-3.jpg','assets/img/diski/real/patsha-matte-4.jpg','assets/img/diski/real/patsha-matte-5.jpg']},
+ {id:'mat',group:'MAT Race Wheel',name:'Off-Road',size:'Литые',
+  specs:'Устанавливаем на внедорожники клиентов — диаметр, вылет и цвет подбираем под ваш автомобиль',price:'цена по запросу',
+  img:['assets/img/diski/real/mat-1.jpg','assets/img/diski/real/mat-2.jpg']},
+ {id:'agility',group:'Agility Force',name:'Off-Road',size:'Литые',
+  specs:'Прочный off-road диск, подбор размера и цвета под ваш автомобиль',price:'цена по запросу',
+  img:['assets/img/diski/real/agility-1.jpg','assets/img/diski/real/agility-2.jpg']},
+ {id:'fuel',group:'FUEL',name:'Off-Road',size:'Литые',
+  specs:'Американский бренд дисков для внедорожников, разные дизайны и размеры под заказ',price:'цена по запросу',
+  img:['assets/img/diski/real/fuel-1.jpg','assets/img/diski/real/fuel-2.jpg','assets/img/diski/real/fuel-3.jpg']},
+ {id:'braid',group:'Braid Wheels',name:'Rally / Dakar',size:'Кованые',
+  specs:'Профессиональные спортивные диски для ралли-рейдов (включая «Дакар») и тяжёлого бездорожья, повышенная прочность на ударные нагрузки',price:'цена по запросу',
+  img:['assets/img/diski/real/braid-1.jpg']},
+ {id:'blackmud',group:'Off-Road диски',name:'Дизайн «Black Mud» (бедлок)',size:'Литые',
+  specs:'Диск с имитацией бедлока (decorative beadlock) — агрессивный внедорожный вид без обслуживания настоящего бедлока',price:'цена по запросу',
+  img:['assets/img/diski/real/blackmud-1.jpg','assets/img/diski/real/blackmud-2.jpg']}
 ];
-var DISKI_GALLERY=['assets/img/diski/diski-work-01.jpg','assets/img/diski/diski-work-02.jpg','assets/img/diski/diski-work-03.jpg',
- 'assets/img/diski/diski-work-04.jpg','assets/img/diski/diski-work-05.jpg','assets/img/diski/diski-work-06.jpg'];
+var DISKI_GALLERY=['assets/img/diski/real/project-1.jpg','assets/img/diski/real/project-2.jpg','assets/img/diski/real/project-3.jpg',
+ 'assets/img/diski/real/project-4.jpg','assets/img/diski/real/project-5.jpg','assets/img/diski/real/project-6.jpg',
+ 'assets/img/diski/real/patsha-onvehicle-3.jpg','assets/img/diski/real/patsha-onvehicle-4.jpg','assets/img/diski/real/patsha-onvehicle-5.jpg'];
 
 var diskiCatLB=null, diskiWorkLB=null;
 if(document.getElementById('diskiCatalog')){
