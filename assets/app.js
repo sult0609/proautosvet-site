@@ -561,6 +561,38 @@ if(document.getElementById('diskiGallery')){
  renderGallery('diskiGallery',DISKI_GALLERY,'diskiWorkLB','Внедорожник с дисками, проект ProAvtosvet');
 }
 
+// ---- каталог моделей линз (avtosvet.html) ----
+// Реальные 2 модели, которые клиент продаёт (2026-11-17) — данные и фото взяты
+// с его же карточек товара на Kaspi.kz (продавец ProAvtoSvet.kz), это не
+// придуманные характеристики. Ссылки ведут на эти же карточки на Kaspi.
+var AVTOSVET_CATALOG=[
+ {id:'prisma-gen2',group:'X-Optic Prisma Force',name:'Gen 2.0',art:'45801',
+  specs:'88 Вт · 12 светодиодов (Bi-LED) · 5500K · линза 3.0″ · комплект 2 шт',
+  price:'94 500 ₸',tag1:'Bi-LED',tag2:'88 Вт',
+  kaspi:'https://kaspi.kz/shop/p/x-optic-svetodiodnaja-linza-45801-138824359/',
+  img:['assets/img/avtosvet/real/lens45801-1.jpg','assets/img/avtosvet/real/lens45801-2-box.jpg','assets/img/avtosvet/real/lens45801-3-parts.jpg','assets/img/avtosvet/real/lens45801-4.jpg','assets/img/avtosvet/real/lens45801-5-module.jpg','assets/img/avtosvet/real/lens45801-6.jpg']},
+ {id:'prisma-gen1',group:'X-Optic Prisma Force',name:'75 Вт',art:'41643',
+  specs:'75 Вт · Bi-LED · 5500K · комплект 2 шт',
+  price:'91 000 ₸',tag1:'Bi-LED',tag2:'75 Вт',
+  kaspi:'https://kaspi.kz/shop/p/x-optic-svetodiodnaja-linza-41643-121174097/',
+  img:['assets/img/avtosvet/real/lens41643-1.jpg','assets/img/avtosvet/real/lens41643-2-box.jpg','assets/img/avtosvet/real/lens41643-3.jpg','assets/img/avtosvet/real/lens41643-4.jpg']}
+];
+var avtosvetCatLB=null;
+if(document.getElementById('avtosvetCatalog')){
+ var avtosvetCatImages=[]; var avtosvetCatOffsets=[];
+ AVTOSVET_CATALOG.forEach(function(m){ avtosvetCatOffsets.push(avtosvetCatImages.length); avtosvetCatImages=avtosvetCatImages.concat(m.img); });
+ avtosvetCatLB=makeLightbox('avtosvetCat',avtosvetCatImages);
+ window.avtosvetCatLB=avtosvetCatLB;
+ document.getElementById('avtosvetCatalog').innerHTML=AVTOSVET_CATALOG.map(function(m,i){
+  return '<article class="card reveal wheel-card"><div class="ph" onclick="avtosvetCatLB.open('+avtosvetCatOffsets[i]+')"><img loading="lazy" src="'+m.img[0]+'" alt="'+esc(m.group+' '+m.name)+'"><span class="wheel-photos">'+m.img.length+' фото</span></div>'+
+  '<div class="body"><div class="tags"><span class="tag">'+esc(m.tag1)+'</span><span class="tag">'+esc(m.tag2)+'</span></div>'+
+  '<h3>'+esc(m.group)+' — '+esc(m.name)+'</h3><p>'+esc(m.specs)+'</p>'+
+  '<div class="wheel-price">'+esc(m.price)+'</div>'+
+  '<a class="kaspi-link" href="'+esc(m.kaspi)+'" target="_blank" rel="noreferrer">Смотреть на Kaspi.kz ↗</a>'+
+  '</div></article>';
+ }).join('');
+}
+
 // ---- галерея "Автосвет X-Optic Prisma Force" (avtosvet.html) ----
 var AVTOSVET_GALLERY=['assets/img/avtosvet/avtosvet-work-01.jpg','assets/img/avtosvet/avtosvet-work-02.jpg','assets/img/avtosvet/avtosvet-work-03.jpg',
  'assets/img/avtosvet/avtosvet-work-04.jpg','assets/img/avtosvet/avtosvet-work-05.jpg','assets/img/avtosvet/avtosvet-work-06.jpg'];
