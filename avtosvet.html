@@ -71,10 +71,7 @@ nav.main .navdrop-menu a span{display:block;font-size:12px;color:var(--muted);ma
 .mmenu{display:none;flex-direction:column;gap:6px;background:#0d0e10;border-top:1px solid var(--line);padding:12px 16px;position:absolute;top:64px;left:0;right:0;width:100%;max-height:calc(100vh - 64px);max-height:calc(100svh - 64px);overflow-y:auto;-webkit-overflow-scrolling:touch;padding-left:calc(16px + env(safe-area-inset-left));padding-right:calc(16px + env(safe-area-inset-right))}
 .mmenu button,.mmenu a{background:none;color:var(--muted);text-align:left;padding:6px 0}
 /* hero */
-.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center}
-.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.hero .ov1{position:absolute;inset:0;background:linear-gradient(90deg,#0d0e10,rgba(13,14,16,.8),transparent)}
-.hero .ov2{position:absolute;inset:0;background:linear-gradient(0deg,#0d0e10,transparent,rgba(13,14,16,.6))}
+.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;background:radial-gradient(ellipse 900px 600px at 80% 20%,rgba(198,240,0,.14),transparent 60%),linear-gradient(160deg,#121318,var(--ink) 60%)}
 .hero .wrap{position:relative;padding:96px 16px 64px}
 .hero h1{font-size:clamp(36px,7vw,66px);font-weight:700;line-height:1.05;margin:20px 0}
 .hero p{font-size:18px;color:var(--muted);max-width:560px}
@@ -240,8 +237,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <!-- HERO -->
 <section class="hero" id="top">
-  <img src="assets/img/avtosvet/avtosvet-hero.jpg" alt="Внедорожник с включённым светом X-Optic Prisma Force — ProAvtosvet">
-  <div class="ov1"></div><div class="ov2"></div>
   <div class="wrap">
     <div style="max-width:620px">
       <span class="pill">АВТОСВЕТ</span>
