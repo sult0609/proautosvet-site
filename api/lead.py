@@ -145,6 +145,26 @@ class handler(BaseHTTPRequestHandler):
             note_lines.append(f"Страница: {page}")
         note_text = "\n".join(note_lines)
 
+        # тег сделки по странице-источнику — чтобы было видно с первого
+        # взгляда на карточку/канбан/список сделок, откуда пришла заявка,
+        # а не только из текста в примечании или заголовка сделки.
+        # Сперва смотрим на "service" (его шлют формы diski.html/avtosvet.html),
+        # а если его нет — пробуем по URL страницы (на случай новых страниц,
+        # которые ещё не успели завести отдельное поле service).
+        lead_tag = None
+        if "диски" in service.lower():
+            lead_tag = "Сайт: Диски"
+        elif "автосвет" in service.lower() or "prisma" in service.lower():
+            lead_tag = "Сайт: Автосвет"
+        elif "diski.html" in page:
+            lead_tag = "Сайт: Диски"
+        elif "avtosvet.html" in page:
+            lead_tag = "Сайт: Автосвет"
+        elif source or page:
+            # конфигуратор на главной и прочие формы без service/страницы-
+            # каталога — общий тег, чтобы тоже отличать от заявок не с сайта
+            lead_tag = "Сайт: Конфигуратор"
+
         payload = [{
             "name": lead_name,
             "_embedded": {
@@ -157,6 +177,8 @@ class handler(BaseHTTPRequestHandler):
                 }],
             },
         }]
+        if lead_tag:
+            payload[0]["_embedded"]["tags"] = [{"name": lead_tag}]
 
         leads_url = f"https://{subdomain}.amocrm.ru/api/v4/leads/complex"
         status, body = _call_amo(leads_url, token, payload)
