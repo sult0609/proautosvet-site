@@ -153,17 +153,17 @@ class handler(BaseHTTPRequestHandler):
         # которые ещё не успели завести отдельное поле service).
         lead_tag = None
         if "диски" in service.lower():
-            lead_tag = "Сайт: Диски"
+            lead_tag = "Таргет Диски"
         elif "автосвет" in service.lower() or "prisma" in service.lower():
-            lead_tag = "Сайт: Автосвет"
+            lead_tag = "Таргет Свет"
         elif "diski.html" in page:
-            lead_tag = "Сайт: Диски"
+            lead_tag = "Таргет Диски"
         elif "avtosvet.html" in page:
-            lead_tag = "Сайт: Автосвет"
+            lead_tag = "Таргет Свет"
         elif source or page:
             # конфигуратор на главной и прочие формы без service/страницы-
             # каталога — общий тег, чтобы тоже отличать от заявок не с сайта
-            lead_tag = "Сайт: Конфигуратор"
+            lead_tag = "Таргет Конфигуратор"
 
         payload = [{
             "name": lead_name,
